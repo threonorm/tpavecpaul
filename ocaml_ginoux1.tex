@@ -1,0 +1,43 @@
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+
+\begin{document}
+\title{Quelques exos du TD 1 Ginoux}
+\maketitle{}
+
+\section{Que diable se passe-t-il dans cette mémoire ?}
+Pour une chaîne de caractères $u$ on note $\tilde{u}$ sa chaîne miroir (par exemple si $u = "abcd"$, $\tilde{u} = "dcba"$).
+
+\paragraph{1.} Écrire la fonction qui à $u$ associe $\tilde{u}$.
+
+\paragraph{2.} Écrire la fonction qui teste si un mot est un palindrome, i.e. si $u = \tilde{u}$.
+
+\paragraph{3.} Que penser de la solution suivante~?
+\begin{verbatim}let miroir u = let n=string_length u in
+    for i=0 to n/2-1 do
+    let m=u.[i] in u.[i]<-u.[n-1-i] ; u.[n-1-i]<-m
+    done ;
+    u ;;
+    
+let palindrome u = let v = miroir u in u=v ;;    
+\end{verbatim}
+
+\section{Typage}
+On considère la fonction
+\begin{verbatim}let egal x y = match y with
+    | x -> true
+    | _ -> false ;;
+\end{verbatim}
+Quel est son type~? Que renvoie \texttt{egal 1 2}~?
+\end{document}

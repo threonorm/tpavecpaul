@@ -22,15 +22,15 @@ Un problème bien connu de l'informatique est le problème de savoir si une form
 
 Il y a une foule de problèmes et de littérature qui tournent autour de la satisfaisabilité, desquels l'étudiant curieux pourra wikipédier puis approfondir. Quelques mots clefs : 3-SAT, MAX SAT, MAX-3-EQ-LIN.
 
-Pour ce TD, l'objectif est de représenter sur la machine les formules logique de manière à ce que leur manipulation soit pratique. Ensuite nous implémenterons des stratégies naïves de résolution du problème, puis nous traiterons un cas particulier de formule logique. Le but du TD est de vous montrer que même pour les problèmes difficiles certaines instances du problème peuvent être résolues en temps polynomial. Si une question vous semble difficile, essayez de traiter des exemples sur un papier, et ayez une idée de clair de votre stratégie de résolution avant de commencer à l'implémenter sur la machine : vous gagnerez du temps.
+Pour ce TD, l'objectif est de représenter sur la machine les formules logique de manière à ce que leur manipulation soit pratique. Ensuite nous implémenterons des stratégies naïves de résolution du problème, puis nous traiterons un cas particulier de formule logique. Le but du TD est de vous montrer que même pour les problèmes difficiles certaines instances du problème peuvent être résolues en temps polynomial. Si une question vous semble difficile, essayez de traiter des exemples sur un papier, et ayez une idée claire de votre stratégie de résolution avant de commencer à l'implémenter sur la machine : vous gagnerez du temps.
 
 \section{Représentation de formules logiques et manipulations}
 
 \paragraph{1.} Proposer un type pour : les variables (appelé \texttt{var}), les littéraux (appelé \texttt{litt}), les clauses (appelé \texttt{clause}), les formules (appelé \texttt{formule}), les formule en forme normale conjonctive (appelé \texttt{CNF}), ainsi que pour les valuations (appelé \texttt{valua})
 
-\paragraph{2.} Écrire une fonction qui transforme un objet de type \texttt{CNF} en un objet de type formule de manière canonique. 
+\paragraph{2.} Écrire une fonction qui transforme un objet de type \texttt{CNF} en un objet de type \texttt{formule} de manière canonique. 
 
-\paragraph{3.} Écrire une fonction qui test si deux formules (type \texttt{formule}) sont équivalentes. Un algorithme naïf sera suffisant.
+\paragraph{3.} Écrire une fonction qui teste si deux formules (type \texttt{formule}) sont équivalentes. Un algorithme naïf sera suffisant.
 
 \paragraph{4.} Écrire une fonction qui étant donné une formule en CNF et une variable, renvoie la liste des clauses qui font intervenir cette variable. 
 \paragraph{5.} Écrire une fonction qui étant donné une formule en CNF et une valuation, renvoie la liste des clauses non satisfaites.
@@ -74,7 +74,7 @@ Ce petit complément est simplement là pour vous faire intuiter que le SAT-solv
 
 \paragraph{1.} Proposez un type pour cette représentation par graphes.
 
-\paragraph{2.} Programmez une fonction qui prends en entrée une formule en CNF et renvoie sa représentation par graphe que l'on vient de présenter. Ensuite programmez la fonction réciproque. 
+\paragraph{2.} Programmez une fonction qui prend en entrée une formule en CNF et renvoie sa représentation par graphe que l'on vient de présenter. Ensuite programmez la fonction réciproque. 
 
 \paragraph{3.} En déduire une fonction qui génère une formule en CNF dont le graphe associé est un arbre.
 

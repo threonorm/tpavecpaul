@@ -1,0 +1,67 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Caml-TD1 : Quelques jeux}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}}
+\maketitle{}
+
+\section{Nombres de Fibonacci et mémoïzation}
+Soit $(u_n)$ définie par $u_0=u_1=1$ et $u_{n+2}=u_{n+1}+u_n$
+\paragraph{Q.1} Programmer une fonction récrusive \texttt{fibo : int-> int} qui calcule $u_n$. Quelle est la complexité de votre fonction? A quoi pouvez-vous penser pour l'améliorer.
+
+Dans cette première partie nous allons proposer une manière un peu différente de faire de la récursivité : \emph{la mémoïzation}.
+
+Une table de hachage est un tableau de liste : \texttt{table : a' list array} ainsi qu'une fonction de hachage \texttt{h: 'a -> int} qui a tout objet du type que l'on veut stocker, associe un entier, qui est l'indice du tableau dans lequel il doit être. Si on veut insérer un élément, on calcul l'indice, et on l'ajoute en tête de liste dans la case du tableau adaptée. De même on peut effectuer une recherche ou une suppression en temps raisonnable.
+
+\paragraph{Q.1}Quelles sont ces complexité "raisonnables"? Quelle propriété on veut sur h, pour que ces temps soient le plus raisonnable possible.
+
+\paragraph{Q.2} Implémenter une table de hachage \texttt{table} de taille 17. Avec la fonction de hachage qui consiste simplement à réduire l'entrée qui est un entier modulo 17.
+
+
+
+La mémoïzation consiste à faire de la récursivité améliorée : lorsqu'on appelle la fonction sur un élément plus petit on vérifie d'abord si on ne l'aurait pas déjà calculé, auquel cas on le renvoit immédiatement. Sinon on le calcul, on le rajoute dans la table puis on le renvoit. Les éléments déjà calculés sont stockés dans une table de hachage.
+
+\paragraph{Q.3} Implémenter une fonction qui calcule Fibonacci en utilisant la mémoïzation.
+ 
+
+\section{Jeu de Nim et stratégie gagnante}
+
+\section{Problème de Joseph}
+$n$ personnes se réunissent en cercle dans une salle. Ils sont menacés par des ennemis à l'extérieur et décident donc de se suicider, pour sauver leur honneur, chacun leur tour. Pour ça ils choisissent un premier, et en partant de là comptent m personnes, et cette personne doit se suicider. Puis on recommence avec une personne de moins, à partir de la personne qui suivait la dernière morte. Le but est d'être le dernier survivant : certainement pour retourner sa veste et peut-être s'en sortir. Pour plus d'histoire on ira voir la page wikipédia de Flavius Joseph.
+
+\paragraph{Q.1} Proposer une manière de représenter une liste circulaire. 
+
+\paragraph{Q.2} Écrire une fonction qui transforme une liste en liste circulaire.
+
+\paragraph{Q.3} Écrire une fonction de recherche d'élément dans une liste circulaire.
+
+\paragraph{Q.4} Écrire une fonction de suppression d'élément dans une liste circulaire.
+
+\paragraph{Q.5} En déduire une fonction \texttt{joseph: int -> int -> int} qui prend deux arguments n et m et détermine quelle est la position gagnante
+lorsqu'il y a n personnes dans le cercles et qu'on en tue une sur m.
+
+
+\subsection{Version cours de récréation de l'école primaire de Paul Melotti.}
+La problèmatique, non moins sérieuse est légèrement différente : on souhaite désigner le loup\footnote{Bien entendu tout le monde sait jouer au loup}.
+Cette fois-ci on ne reprends pas à compter à partir du survivant qui suit le dernier mort, mais toujours en repartant du premier survivant qui suit le premier.
+Et accessoirement on ne tue personne : c'est la version kikoolol. Le dernier restant est le loup.
+\paragraph{Q.1} Écrire une fonction qui résout ce problème.
+\paragraph{Q.2} Est-ce que ce jeu est juste? Y-a-t-il des positions préférentielles à n fixé? (On pourrait imaginer qu'on tire m aléatoire au début du jeu)
+\subsection{Pour aller plus loin}
+Proposer une implémentation fonctionnelle des listes circulaires.
+\section{Références}
+Le problème de Joseph est très bien étudié dans le livre \emph{Concrete Mathematics}. La récurrence est résolue dans le cas $m=2$ de plusieurs manières différentes.
+
+\end{document}

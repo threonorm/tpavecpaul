@@ -14,7 +14,7 @@
 
 \begin{document}
 \title{Caml-TD1 : Quelques jeux}
-\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}\and Paul Melotti}
 \maketitle{}
 
 \section{Nombres de Fibonacci et mémoïzation}
@@ -54,11 +54,22 @@ lorsqu'il y a n personnes dans le cercles et qu'on en tue une sur m.
 
 
 \subsection{Version cours de récréation de l'école primaire de Paul Melotti.}
-La problèmatique, non moins sérieuse est légèrement différente : on souhaite désigner le loup\footnote{Bien entendu tout le monde sait jouer au loup}.
-Cette fois-ci on ne reprends pas à compter à partir du survivant qui suit le dernier mort, mais toujours en repartant du premier survivant qui suit le premier.
+La problèmatique, non moins sérieuse est légèrement différente : on souhaite désigner le loup\footnote{Bien entendu tout le monde sait jouer au loup} parmi un groupe d'enfants.
+Cette fois-ci on ne reprends pas à compter à partir du survivant qui suit le dernier mort, mais toujours en repartant du premier survivant qui suit le compteur. Si le compteur est éliminé, son premier successeur devient compteur.
 Et accessoirement on ne tue personne : c'est la version kikoolol. Le dernier restant est le loup.
-\paragraph{Q.1} Écrire une fonction qui résout ce problème.
-\paragraph{Q.2} Est-ce que ce jeu est juste? Y-a-t-il des positions préférentielles à n fixé? (On pourrait imaginer qu'on tire m aléatoire au début du jeu)
+
+On numérote les $n$ enfants de $0$ à $n-1$, le compteur initial portant le numéro $0$. On note $l(n,m)$ le loup élu pour $n$ enfants avec une comptine de longueur $m$.
+
+\paragraph{Q.1} Montrer que $l(n,m) = \left\{
+	\begin{array}{ll}
+		0  & \mbox{si } n = 1 \\
+		l(n-1,m) & \mbox{si } l(n-1,m) < m \% n \\
+		l(n-1,m) + 1 & \mbox{sinon}.
+	\end{array}
+\right. $
+\paragraph{Q.2} Écrire une fonction qui résout ce problème. On pourra soit refaire comme dans la partie précédente, soit utiliser la question 1.
+\paragraph{Q.3} Montrer que pour $l(n-1,n) = 0$ ssi $n$ est premier.
+\paragraph{Q.4} Ce jeu vous semble-t-il juste? Y-a-t-il des positions préférentielles à $n$ fixé? (On pourrait imaginer qu'on tire $m$ aléatoire au début du jeu. Faire des expérience avec notre fonction.)
 \subsection{Pour aller plus loin}
 Proposer une implémentation fonctionnelle des listes circulaires.
 \section{Références}

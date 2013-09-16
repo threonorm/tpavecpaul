@@ -1,0 +1,119 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumerate}
+
+%\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Caml-TP1}
+\author{Paul Melotti\footnote{Vous pouvez bien entendu me contacter par mail à \texttt{paul.melotti@ens.fr}, même en cas de début de question~: N'HÉSITEZ PAS.}}
+\maketitle{}
+
+\section{Que diable se passe-t-il dans cette mémoire~?}
+Pour une chaîne de caractères $u$ on note $\tilde{u}$ sa chaîne miroir (par exemple si $u = "abcd"$, $\tilde{u} = "dcba"$).
+\begin{enumerate}[a)]
+\item Écrire la fonction qui à $u$ associe $\tilde{u}$.
+
+\item Écrire la fonction qui teste si un mot est un palindrome, i.e. si $u = \tilde{u}$.
+
+\item Que penser de la solution suivante~?
+\begin{verbatim}    let echange u i j = let m=u.[i] in u.[i]<-u.[j] ; u.[j]<-m ;;
+    let miroir u = let n=string_length u in
+        for i=0 to n/2-1 do
+            echange u i (n-1-i)
+        done ;
+        u ;;
+    let palindrome u = let v = miroir u in u=v ;;    
+\end{verbatim}
+
+\item Et si l'on remplace \texttt{miroir} par celle-ci~?
+\begin{verbatim}    let miroir u = let n=string_length u in
+        let v=u in
+        for i=0 to n/2-1 do
+            echange v i (n-1-i)
+        done ;
+        v ;;   
+\end{verbatim}
+\end{enumerate}
+
+\section{Récursivité}
+On considère la fonction suivante~:
+\begin{verbatim}    let rec f n = match n with
+        | 0 -> 2
+        | _ -> (f (n-1)) * (f (n-1)) ;;\end{verbatim}
+Que calcule-t-elle~? Quelle est sa complexité~? Proposer une amélioration.
+
+\section{Matching}
+Cunégonde a l'idée saugrenue d'écrire une fonction qui teste si deux éléments sont égaux. Voici sa solution.
+\begin{verbatim}    let egal x y = match y with
+        | x -> true
+        | _ -> false ;;\end{verbatim}
+Qu'en pensez-vous~? Que renvoie \texttt{egal 1 2}~?
+
+\section{Exceptions}
+Les exceptions sont des instructions qui demandent l'arrêt du programme. Vous en avez déjà rencontré~: ce sont par exemple les erreurs du style ``Invalid\_argument : vect\_item '' que vous obtenez lorsque vous essayez d'accéder à une case inexistante d'un tableau. Le programme s'est arrêté en cours de route pour vous lancer ce signal.
+
+Une exception doit toujours être déclarée au préalable par la commande \texttt{exception <nom>}. Une exception peut aussi être rattachée à un type (par exemple, un entier~: on renvoie l'indice du tableau pour lequel on a eu une erreur,...), dans ce cas, on le précisera dans la déclaration : \texttt{exception <nom> of <type>}.
+
+Pour pouvoir gérer les exceptions, nous devrons commencer le programme par la commande \texttt{try}. À l'intérieur du programme, on déclenchera l'exception par la commande \texttt{raise <nom>}, ou \texttt{raise <nom> <donnée>} si l'exception a un type. L'exception sera alors récupérée par un matching final qui indiquera ce qu'il faut faire. La syntaxe est donc~:
+\begin{verbatim}try <expr> with
+  <exception1> -> <faire ceci>
+  | <exception2> -> <faire cela>
+  | ...
+\end{verbatim}
+Caml va évaluer \texttt{<expr>}. Si aucune exception n'est déclenchée, on contunue normalement en ignorant le matching sur les exceptions. Si une exception est déclenchée, Caml la recherche dans la liste pour savoir ce qu'il doit faire.
+
+\emph{Exemple~:} on cherche dans un vecteur \texttt{v} un élément \texttt{x}. La fonction \texttt{cherche} doit renvoyer l'indice d'un élément de \texttt{v} égal à \texttt{x}, ou \texttt{-1} si on n'en trouve pas.
+\begin{verbatim}exception trouve of int;;
+let cherche x v = try
+  for i=0 to (vect_length v)-1 do
+  if v.(i)=x then raise (trouve i)
+  done;
+  -1
+with trouvé k -> k;;
+\end{verbatim}
+
+\emph{Exercice~:} écrire une fonction qui teste si une liste d'entiers est croissante, d'abord en style itératif (i.e. avec des boucles), puis récursif (i.e. avec des fonctions récursives). Le faire sans exceptions, puis avec.
+
+\section{Manipulation de listes}
+Écrire les fonctions~:
+\begin{enumerate}[a)]
+\item \texttt{card : ’a list -> int}\\ qui renvoie le cardinal d'une liste.
+
+\item \texttt{estpresent : ’a -> ’a list -> bool}\\ qui dit si un élément est présent dans une liste.
+
+\item \texttt{retourne : ’a list -> ’a list}\\ qui retourne une liste. Essayez d'obtenir une bonne complexité.
+
+\item \texttt{applique : (’a -> ’b) -> ’a list -> ’b list}\\
+qui étant donné une fonction $f$ et une liste $[a_1;\dots ;a_n]$ doit renvoyer $[f a_1;\dots ;f a_n]$.
+
+Cette fonction existe en Caml, il s'agit de \texttt{map\_list}.
+
+\item \texttt{itere : (’a -> ’b -> ’a) -> ’a -> ’b list -> ’a}\\
+qui étant donné une fonction $f$, un élément $a_0$ et une liste $[b_1;\dots ;b_n]$ doit renvoyer \\$f\ a_0\ (f\ b_1 ( \dots (f\ b_{n-1}\ b_n)\dots ))$.
+
+Cette fonction existe en Caml, il s'agit de \texttt{it\_list}.
+
+\item Utiliser \texttt{it\_list} pour écrire une fonction qui calcule la somme d'une liste d'entiers.
+
+\item(*) Utiliser \texttt{map\_list} et/ou \texttt{it\_list} pour écrire une fonction qui calcule le produit cartésien de deux listes.
+\end{enumerate}
+
+\section{Entiers de Church}
+Dans certains domaines de la logique et de l'informatique théorique, on raisonne essentiellement avec des fonctions. On peut avoir besoin de construire, dans cette théorie, les entiers à partir des fonctions. Une façon de le faire est d'utiliser les entiers de Church~: on assimile l'entier $n$ à la fonction qui à $f$ associe son itérée $n$ fois, $f^n$.\footnote{Pour plus d'informations, chercher du côté du lambda-calcul, ou me demander}
+\begin{enumerate}[a)]
+\item Quel serait en Caml le type d'un entier de Church~?
+\item Écrire des fonctions \texttt{church\_of\_int} et \texttt{int\_of\_church} qui effectuent les conversions entre entiers usuels et entiers de Church.
+\item (*) Écrire les fonctions d'addition, multiplication et exponentiation pour les entiers de Church (sans repasser par les entiers usuels~!).
+\end{enumerate}
+\end{document}
+

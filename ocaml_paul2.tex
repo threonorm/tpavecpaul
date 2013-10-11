@@ -18,24 +18,25 @@
 \setmainfont[Numbers=OldStyle]{Linux Libertine O}
 
 \begin{document}
-\title{Caml-TD1 : Quelques jeux}
-\author{Thomas Bourgeat \and Paul Melotti\footnote{Vous pouvez toujours me contacter à \texttt{paul.melotti@ens.fr} pour toute question, remarque, etc.}}
+\title{Caml-TD2 : Quelques jeux}
+\date{3 octobre 2013 - 10 octobre 2013}
+\author{Paul Melotti (\texttt{paul.melotti@ens.fr}) \and Thomas Bourgeat}
 \maketitle{}
 
-\section{Nombres de Fibonacci et mémoïzation}
-Soit $(u_n)$ définie par $u_0=0$, $u_1=1$ et $u_{n+2}=u_{n+1}+u_n$
-\paragraph{Q.1} Programmer une fonction récursive \texttt{fibo : int-> int} qui calcule $u_n$. Quelle est la complexité de votre fonction~? À quoi pouvez-vous penser pour l'améliorer~?
+\section{Nombres de Fibonacci et mémoïsation}
+Soit $(F_n)$ la suite définie par $F_0=0$, $F_1=1$ et $F_{n+2}=F_{n+1}+F_n$
+\paragraph{Q.1} Programmer une fonction récursive \texttt{fibo : int -> int} qui calcule $F_n$. Quelle est la complexité de votre fonction~? Est-ce optimal~?
 
-Dans cette première partie nous allons proposer une manière un peu différente de faire de la récursivité~: la \emph{mémoïzation}.
+Dans cette première partie nous allons proposer une manière un peu différente de faire de la récursivité~: la \emph{mémoïsation}.
 
-Une table de hachage est un tableau de liste~: \texttt{table : (a'*b')
+Une table de hachage est un tableau de listes~: \texttt{table : (a'*b')
 list array} ainsi qu'une fonction de hachage \texttt{h: 'a -> int}. Le
-but est de stocker des éléments de type \texttt{b}, indexés par leurs clefs de
-type \texttt{a}. Pour stocker $(k,e)$ dans une table,on calcule le hachage $h(k)$,
+but est de stocker des éléments de type \texttt{'b}, indexés par leurs clefs de
+type \texttt{'a}. Pour stocker $(k,e)$ dans une table,on calcule le hachage $h(k)$,
 qui donne l'indice du tableau auquel on va insérer $(k,e)$, en tête de liste. 
 De même on peut effectuer une recherche ou une suppression en temps raisonnable.
 Toutes les manipulations portent sur les clefs et le hachage des clefs.
-L'idée de la mémoization consiste à stocker les $(n,f(n))$ d'une fonction
+L'idée de la mémoisation consiste à stocker les $(n,f(n))$ d'une fonction
 récursive au fur et à mesure qu'on les calcule. Ainsi si l'on a besoin plus tard
 d'un calcul déjà effectué il est inutile de le refaire~: on va le
 chercher dans la table.
@@ -44,16 +45,16 @@ chercher dans la table.
 suppression~? Quelle propriété faut-il sur $h$ pour que notre table de
 hachage soit intéressante~?
 
-\paragraph{Q.3} Implémenter une table de hachage \texttt{table} de taille
-$17$. On pourra prendre pour fonction de hachage la réduction de l'entier 
-modulo $17$. On programmera une fonction
-d'ajout, une fonction de recherche à partir de la clef (qui renvoie
-l'élément cherché s'il est dans la table, lève une exception sinon),
-et une fonction de suppression.
+\paragraph{Q.3} Implémenter une table de hachage \texttt{table : (int * int) list vect} de taille
+$17$. On pourra prendre pour fonction de hachage \texttt{h : int -> int} la réduction de l'entier 
+modulo $17$. On programmera une fonction \texttt{ajoute : int * int -> unit} qui ajoute
+un élément à la table, et une fonction \texttt{recherche : int -> int}
+ de recherche à partir de la clef, qui renvoie
+l'élément cherché s'il est dans la table, lève une exception sinon.
 
-La mémoïzation consiste à faire de la récursivité améliorée~: lorsqu'on appelle la fonction sur un élément on vérifie d'abord si on ne l'aurait pas déjà calculé, auquel cas on le renvoit immédiatement. Sinon, on le calcule, on le rajoute dans la table puis on le renvoie. Les éléments déjà calculés sont stockés dans une table de hachage.
+La mémoïsation consiste à faire de la récursivité améliorée~: lorsqu'on appelle la fonction sur un élément on vérifie d'abord si on ne l'aurait pas déjà calculé, auquel cas on le renvoie immédiatement. Sinon, on le calcule, on le rajoute dans la table puis on le renvoie. Les éléments déjà calculés sont stockés dans une table de hachage.
 
-\paragraph{Q.5} Implémenter une fonction qui calcule Fibonacci en utilisant la mémoïzation.
+\paragraph{Q.5} Implémenter une fonction \texttt{fibo\_memo : int -> int} qui calcule Fibonacci en utilisant la mémoïsation.
 
 \paragraph{Q.6} Quel est l'avantage par rapport à l'utilisation d'un grand tableau pour stocker directement les valeurs de la suite~?
 
@@ -62,13 +63,13 @@ La mémoïzation consiste à faire de la récursivité améliorée~: lorsqu'on a
 \subsection{Version historique}
 $n$ personnes se réunissent en cercle dans une salle. Ils sont menacés par des ennemis à l'extérieur et décident de se suicider, pour sauver leur honneur, chacun leur tour. Pour ça ils choisissent un premier, et en partant de là comptent $m$ personnes, et cette personne doit se suicider. Puis on recommence en partant de la personne qui suit la dernière personne morte. Le but est d'être le dernier survivant~: certainement pour retourner sa veste et peut-être s'en sortir. Pour plus d'histoire on ira voir la page wikipédia de Flavius Josèphe.
 
-\paragraph{Q.1} Proposer une manière de représenter une liste circulaire. 
+\paragraph{Q.1} Proposer une manière de représenter le groupe de $n$ personnes. Quel que soit le type choisi, on parlera par la suite de \og liste circulaire\fg{}, et ce type sera nommé \texttt{lc}.
 
-\paragraph{Q.2} Écrire une fonction qui transforme une liste en liste circulaire.
+\paragraph{Q.2} Écrire une fonction \texttt{convertit : 'a list -> 'a lc} qui transforme une liste en liste circulaire.
 
-\paragraph{Q.3} Écrire une fonction de recherche d'élément dans une liste circulaire.
+\paragraph{Q.3} Écrire une fonction \texttt{estpresent : 'a -> 'a lc -> bool} de recherche d'élément dans une liste circulaire.
 
-\paragraph{Q.4} Écrire une fonction de suppression d'élément dans une liste circulaire.
+\paragraph{Q.4} Écrire une fonction \texttt{supprime : int -> 'a lc -> 'a lc} de suppression d'élément dans une liste circulaire.
 
 \paragraph{Q.5} En déduire une fonction \texttt{josephe: int -> int -> int} qui prend deux arguments $n$ et $m$ et détermine quelle est la position gagnante
 lorsqu'il y a $n$ personnes dans le cercles et qu'on en tue une sur $m$.
@@ -87,32 +88,41 @@ On numérote les $n$ enfants de $0$ à $n-1$, le compteur initial portant le num
 		l(n-1,m) + 1 & \mbox{sinon}.
 	\end{array}
 \right. $
-\paragraph{Q.2} Écrire une fonction qui résout ce problème. On pourra adapter les fonctions du problème de Josèphe, ou bien utiliser la question 1.
+\paragraph{Q.2} Écrire une fonction \texttt{loup : int -> int -> int} qui désigne le loup par cette méthode. On pourra adapter les fonctions du problème de Josèphe, ou bien utiliser la question 1.
 \paragraph{Q.3} Montrer que $l(n-1,n) = 0$ ssi $n$ est premier.
-\paragraph{Q.4} Ce jeu vous semble-t-il juste? Y-a-t-il des positions préférentielles à $n$ fixé? (On pourrait imaginer qu'on tire $m$ aléatoire au début du jeu. Faire des expérience avec votre fonction.)
+\paragraph{Q.4} Ce jeu vous semble-t-il juste~? Y-a-t-il des positions préférentielles à $n$ fixé~? On pourrait imaginer qu'on tire $m$ aléatoire au début du jeu. Faire des expérience avec votre fonction.
 
-\subsection{Pour aller plus loin}
-\paragraph{Q.1}Proposer une implémentation fonctionnelle des listes circulaires.
-\paragraph{Q.2}Combien y-a-t-il de positions gagnantes au Tic Tac Toe
-3x3x3. 
-
-\section{Décomposition de Zeckendorf}
+\section{Un jeu de Nim}
+\subsection{Décomposition de Zeckendorf}
 Le mathématicien belge Édouard Zeckendorf a démontré en 1972 le théorème suivant~:
 \begin{The} Tout entier positif s'écrit de manière unique comme somme de termes de la suite de Fibonacci tels que deux termes ne sont jamais consécutifs. Autrement dit, pour tout $N \geq 0$, il existe une unique suite d'entiers  $c_0,\dots ,c_k$ tels que $c_0 \geq 2$, $c_{i+1} > c_i + 1$ et
-\[N = \sum_{i=0}^{k} u_{c_i} \]
-où $u_n$ est le $n$-ième terme de la suite de Fibonacci.
+\[N = \sum_{i=0}^{k} F_{c_i} \]
+où $F_n$ est le $n$-ième terme de la suite de Fibonacci.
 \end{The}
 On va écrire la fonction qui à un entier $N$ associe cette décomposition.
 
-\paragraph{Q.1} En admettant que si $u$ est un terme de la suite de Fibonacci strictement positif, son indice est donné par la formule $n(u)=\floor*{\log _{\phi} \left( u \sqrt{5} + \frac12 \right)}$, écrire la fonction qui à un entier $k$ associe le plus grand terme de la suite de Fibonacci qui lui est inférieur ou égal.
+\paragraph{Q.1} En admettant que si $F$ est un terme de la suite de Fibonacci strictement positif, son indice est donné par la formule $n(F)=\floor*{\log _{\phi} \left( F \sqrt{5} + \frac12 \right)}$, écrire une fonction \texttt{max\_fibo : int -> int} qui à un entier $k$ associe le plus grand terme de la suite de Fibonacci qui lui est inférieur ou égal.
+
+Ici, la mémoïzation est bien utile car on ne sait pas a priori jusqu'à quels termes on devra calculer la suite de Fibonacci.
 
 \paragraph{Q.2} En déduire une fonction \texttt{zeckendorf : int -> int list} qui à un entier $k \geq 0$ associe la liste des termes de Fibonacci qui apparaissent dans sa décomposition.
 
-\paragraph{Q.3} (Question mathématique) Démontrer le théorème de Zeckendorf. Pour l'unicité, on pourra commencer par montrer que~: la somme de termes de la suite de Fibonacci, distincts, non consécutifs, dont le plus grand élément est $u_j$, est strictement inférieure à $u_{j+1}$.
+\paragraph{Q.3} (Question mathématique) (*) Démontrer le théorème de Zeckendorf. Pour l'unicité, on pourra commencer par montrer que~: la somme de termes de la suite de Fibonacci, distincts, non consécutifs, dont le plus grand élément est $u_j$, est strictement inférieure à $u_{j+1}$.
 
-\paragraph{Q.4} (Question mathématique 2) Démontrer la formule de la question 1. On pourra se contenter de la démontrer pour les $u$ assez grands.
+\paragraph{Q.4} (Question mathématique 2) Démontrer la formule de la question 1. On pourra se contenter de la démontrer pour les $F$ assez grands.
 
+\subsection{Jeu de Fibonacci-Nim}
+Le jeu de Fibonacci-Nim est une variante du célèbre jeu des allumettes, dit jeu de Nim. On dispose de $N$ allumettes. Le premier joueur peut prendre entre $1$ et $N-1$ allumettes. Ensuite, les joueurs pourront prendre entre $1$ et $2p$ allumettes, où $p$ est le nombre d'allumettes que vient de prendre l'adversaire. L'objectif est de prendre la dernière allumette.
+
+On peut montrer qu'une stratégie gagnante consiste à prendre systématiquement le plus petit nombre de Fibonacci apparaissant dans la décomposition de Zeckendorf du nombre d'allumettes restantes. Si ce n'est pas possible, alors on est dans une position perdante (et on prend donc un nombre arbitraire d'allumettes, voué à la défaite puisque notre adversaire est un parfait mathématicien). Par contre, si on arrive à jouer ce coup une fois dans la partie, alors on peut montrer que ce coup sera valide pour tous les tours suivants, et nous mènera donc à la victoire.
+\paragraph{Q.1} Écrire une fonction \texttt{coup\_gagnant : int -> int -> int} qui étant donné le coup précédent $p$ et le nombre $n$ d'allumettes restantes, renvoie le nombre d'allumettes qu'il faut prendre pour espérer gagner. Par convention, si $p$ vaut $0$ on considèrera qu'on est le premier à jouer.
+\paragraph{Q.2} En déduire une fonction \texttt{partie : int -> int list} qui étant donné un nombre initial d'allumettes $N$ renvoie la liste des nombres d'allumettes obtenus dans une partie jouée entre deux mathématiciens parfaits, qui ont implémenté la fonction \texttt{zeckendorf} dans leur tête.
+\paragraph{Q.3} (Question mathématique, le retour) (*) Montrer que cette stratégie est bien une stratégie gagnante. On supposera qu'on est le premier à jouer, et que le nombre initial d'allumettes $N$ n'est pas un nombre de Fibonacci. On montrera que :
+\begin{enumerate}
+\item Si on joue ce coup une fois, alors l'adversaire ne peut pas gagner au tour suivant.
+\item Si on joue ce coup une fois, alors soit on vient de gagner ($N$ était un nombre de Fibonacci), soit on pourra rejouer ainsi au tour suivant. Il faudra pour cela distinguer les cas où la décomposition de $N$ contient $2$ termes ou plus...
+\end{enumerate}
 \section{Références}
-Le problème de Joseph est très bien étudié dans le livre \emph{Concrete Mathematics} de Ronald Graham, Donald Knuth et Oren Patashnik. La récurrence est résolue dans le cas $m=2$ de plusieurs manières différentes.
+Le problème de Josèphe est très bien étudié dans le livre \emph{Concrete Mathematics} de Ronald Graham, Donald Knuth et Oren Patashnik. La récurrence est résolue dans le cas $m=2$ de plusieurs manières différentes.
 
 \end{document}

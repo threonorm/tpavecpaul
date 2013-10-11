@@ -29,17 +29,20 @@ mots dans un grand texte. On dit qu'un mot \texttt{m} figure dans un texte
 \[m_0 = t_i, \ m_1 = t_{i+1},\  \dots, \ m_{|m|-1} = t_{i+|m|-1}. \]
 Nos algorithmes chercheront la plus petite position de \texttt{m} dans
 \texttt{t}, si elle existe\footnote{On pourrait aussi rechercher toutes les 
-occurrences de \texttt{m} dans \texttt{t}. Certains algorithmes sont faciles à 
-modifier pour faire ça, d'autres non...}. Dans le cas où \texttt{m} ne figure pas 
+occurrences de \texttt{m} dans \texttt{t}. La plupart des algorithmes seraient
+faciles à modifier pour répondre à ce problème, mais on ne s'y intéressera pas
+ici.}. Dans le cas où \texttt{m} ne figure pas 
 dans \texttt{t}, ils devront renvoyer $-1$.
 
 On pourra représenter les lettres de l'alphabet $A$ par les entiers 
 $0, 1, \dots, |A|-1$, et les mots \texttt{m} et \texttt{t} par des vecteurs. On 
-déclare un type mot~: \texttt{type mot == int vect}.
+déclare donc les types~: \texttt{type lettre == int ;;} 
+\texttt{type mot == lettre vect ;;} (si ces types ne vous plaisent pas, libre à 
+vous d'en utiliser d'autres).
 
 \section{Algorithme naïf}
 L'idée la plus simple est de tester successivement toutes les positions $i$ 
-jusqu'à y trouver une occurrence du mot \texttt{m}.
+jusqu'à trouver une occurrence de \texttt{m}.
 \paragraph{Q.1} Écrire une fonction \texttt{naif : mot -> mot -> int} qui 
 résout le problème par l'algorithme naïf. Quelle est sa complexité~?
 \paragraph{Q.2} Peut-on améliorer cet algorithme si on suppose que toutes les
@@ -61,9 +64,22 @@ chaîne $u_0u_1\dots u_{|m|-1}$ comme un entier en base $q$, et on réduit cet
 entier modulo $p$. Dans notre cas, on prendra $q=|A|=10$ et $p=17$.
 \paragraph{Q.2} Quelle relation lie $h(t_i...t_{i+|m|-1})$ 
 à $h(t_{i+1}...t_{i+|m|})$~?
-\paragraph{Q.3} Écririe une fonction \texttt{rabinkarp : mot -> mot -> int} qui 
-résout le problème par l'algorithme de Rabin-Karp.
+\paragraph{Q.3} Écrire une fonction \texttt{rabinkarp : mot -> mot -> int} qui 
+résout le problème initial par l'algorithme de Rabin-Karp.
 
 Cet algorithme est particulièrement utile quand on recherche plusieurs chaînes 
 de caractères dans un même texte.
+\section{Automates (algorithme de Knuth-Morris-Pratt)}
+L'objectif est de fabriquer un automate déterministe complet (ADC) qui reconnait
+le langage $A^* m$, puis de faire passer le texte $t$ dans cet automate. À 
+chaque fois qu'on passe par un état final de l'automate, on a une occurrence de 
+$m$.
+\subsection{Prolégomènes}
+\paragraph{Q.1} Pourquoi veut-on que l'automate soit déterministe complet~? 
+Proposer une structure de données pour représenter un automate. On notera 
+\texttt{automate} ce type.
+\paragraph{Q.2} En supposant notre automate construit, écrire une fonction 
+\texttt{position : automate -> mot -> int} qui, appliquée à l'automate de $m$ 
+et au mot $t$, résout le problème initial.
+\subsection{Construction de l'ADC reconnaissant $A^* m$}
 \end{document}

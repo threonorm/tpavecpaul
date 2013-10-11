@@ -1,0 +1,69 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\newtheorem{The}{Théorème}
+
+\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Caml-TD3 : Recherche de sous-mots}
+\date{17 octobre 2013 - 7 novembre 2013}
+\author{Paul Melotti (\texttt{paul.melotti@ens.fr})}
+\maketitle{}
+
+L'objectif de ce TP est d'étudier plusieurs algorithmes de recherche de 
+mots dans un grand texte. On dit qu'un mot \texttt{m} figure dans un texte 
+\texttt{t} s'il existe une position $i\leq |t|-|m|$ telle que
+\[m_0 = t_i, \ m_1 = t_{i+1},\  \dots, \ m_{|m|-1} = t_{i+|m|-1}. \]
+Nos algorithmes chercheront la plus petite position de \texttt{m} dans
+\texttt{t}, si elle existe\footnote{On pourrait aussi rechercher toutes les 
+occurrences de \texttt{m} dans \texttt{t}. Certains algorithmes sont faciles à 
+modifier pour faire ça, d'autres non...}. Dans le cas où \texttt{m} ne figure pas 
+dans \texttt{t}, ils devront renvoyer $-1$.
+
+On pourra représenter les lettres de l'alphabet $A$ par les entiers 
+$0, 1, \dots, |A|-1$, et les mots \texttt{m} et \texttt{t} par des vecteurs. On 
+déclare un type mot~: \texttt{type mot == int vect}.
+
+\section{Algorithme naïf}
+L'idée la plus simple est de tester successivement toutes les positions $i$ 
+jusqu'à y trouver une occurrence du mot \texttt{m}.
+\paragraph{Q.1} Écrire une fonction \texttt{naif : mot -> mot -> int} qui 
+résout le problème par l'algorithme naïf. Quelle est sa complexité~?
+\paragraph{Q.2} Peut-on améliorer cet algorithme si on suppose que toutes les
+lettres de \texttt{m} sont différentes~?
+\section{Hachage (algorithme de Rabin-Karp)}
+On va utiliser une fonction de hachage des mots de longueur $|m|$, c'est-à-dire 
+une fonction \texttt{h : mot -> int} qui transforme un mot en entier de $[0;p-1]$ où 
+$p$ est un entier bien choisi.
+
+Pour chaque position $i$, on va d'abord tester si $h(t_i...t_{i+|m|-1}) = h(m)$, et
+seulement dans ce cas on testera si $t_i...t_{i+|m|-1} = m$.
+\paragraph{Q.1} Quelle propriété la fonction $h$ doit-elle avoir pour que cette 
+méthode présente un intérêt~?
+
+À cet égard, une bonne fonction $h$ est donnée par
+\[h(u_0u_1\dots u_{|m|-1}) = \sum_{i=0}^{|m-1|} q^i t_{|m|-1-i} \mod p\]
+où $q$ est une base choisie, par exemple $|A|$. Autrement dit, on réprésente la
+chaîne $u_0u_1\dots u_{|m|-1}$ comme un entier en base $q$, et on réduit cet 
+entier modulo $p$. Dans notre cas, on prendra $q=|A|=10$ et $p=17$.
+\paragraph{Q.2} Quelle relation lie $h(t_i...t_{i+|m|-1})$ 
+à $h(t_{i+1}...t_{i+|m|})$~?
+\paragraph{Q.3} Écririe une fonction \texttt{rabinkarp : mot -> mot -> int} qui 
+résout le problème par l'algorithme de Rabin-Karp.
+
+Cet algorithme est particulièrement utile quand on recherche plusieurs chaînes 
+de caractères dans un même texte.
+\end{document}

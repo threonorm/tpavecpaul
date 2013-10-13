@@ -18,20 +18,20 @@
 \setmainfont[Numbers=OldStyle]{Linux Libertine O}
 
 \begin{document}
-\title{Caml-TD3 : Recherche de sous-mots}
+\title{Caml-TP3 : Recherche de sous-mots}
 \date{17 octobre 2013 - 7 novembre 2013}
 \author{Paul Melotti (\texttt{paul.melotti@ens.fr})}
 \maketitle{}
 
 L'objectif de ce TP est d'étudier plusieurs algorithmes de recherche de 
-mots dans un grand texte. On dit qu'un mot \texttt{m} figure dans un texte 
+mots dans un texte. On dit qu'un mot \texttt{m} figure dans un texte 
 \texttt{t} s'il existe une position $i\leq |t|-|m|$ telle que
 \[m_0 = t_i, \ m_1 = t_{i+1},\  \dots, \ m_{|m|-1} = t_{i+|m|-1}. \]
 Nos algorithmes chercheront la plus petite position de \texttt{m} dans
 \texttt{t}, si elle existe\footnote{On pourrait aussi rechercher toutes les 
 occurrences de \texttt{m} dans \texttt{t}. La plupart des algorithmes seraient
-faciles à modifier pour répondre à ce problème, mais on ne s'y intéressera pas
-ici.}. Dans le cas où \texttt{m} ne figure pas 
+faciles à modifier pour répondre à ce problème, vous pourrez essayer de le faire
+si vous avez le temps.}. Dans le cas où \texttt{m} ne figure pas 
 dans \texttt{t}, ils devront renvoyer $-1$.
 
 On pourra représenter les lettres de l'alphabet $A$ par les entiers 
@@ -54,8 +54,8 @@ $p$ est un entier bien choisi.
 
 Pour chaque position $i$, on va d'abord tester si $h(t_i...t_{i+|m|-1}) = h(m)$, et
 seulement dans ce cas on testera si $t_i...t_{i+|m|-1} = m$.
-\paragraph{Q.1} Quelle propriété la fonction $h$ doit-elle avoir pour que cette 
-méthode présente un intérêt~?
+\paragraph{Q.1} Quelle(s) propriété(s) la fonction $h$ doit-elle posséder pour 
+que cette méthode présente un intérêt~?
 
 À cet égard, une bonne fonction $h$ est donnée par
 \[h(u_0u_1\dots u_{|m|-1}) = \sum_{i=0}^{|m-1|} q^i t_{|m|-1-i} \mod p\]
@@ -75,11 +75,80 @@ le langage $A^* m$, puis de faire passer le texte $t$ dans cet automate. À
 chaque fois qu'on passe par un état final de l'automate, on a une occurrence de 
 $m$.
 \subsection{Prolégomènes}
-\paragraph{Q.1} Pourquoi veut-on que l'automate soit déterministe complet~? 
+\paragraph{Q.1} Construire à la main un ADC reconnaissant $A^* m$ pour $m="aabaac"$.
+\paragraph{Q.2} Pourquoi veut-on que l'automate soit déterministe complet~? 
 Proposer une structure de données pour représenter un automate. On notera 
-\texttt{automate} ce type.
-\paragraph{Q.2} En supposant notre automate construit, écrire une fonction 
-\texttt{position : automate -> mot -> int} qui, appliquée à l'automate de $m$ 
+\texttt{adc} ce type.
+\paragraph{Q.3} En supposant notre automate construit, écrire une fonction 
+\texttt{position : adc -> mot -> int} qui, appliquée à l'ADC reconnaissant $A^* m$ 
 et au mot $t$, résout le problème initial.
-\subsection{Construction de l'ADC reconnaissant $A^* m$}
+\subsection{Construction de l'ADC}
+On définit le \textit{bord} d'un mot $u$ comme le plus grand mot différent de $u$ 
+qui soit à la fois préfixe et suffixe de $u$. On le note $B(u)$. Par exemple,
+$B(ababa) = aba$.
+
+On construit un ADC de la façon suivante~:
+\begin{itemize}
+\item Ses états sont les préfixes de $m$~; il y en a $|m|+1$, en comptant le mot
+vide et $m$.
+\item Si $u$ est un préfixe de $m$ et $a$ une lettre, l'automate contient la 
+transition $u \xrightarrow{a} ua$ si $ua$ est un préfixe de $m$, 
+$u \xrightarrow{a} B(ua)$ sinon.
+\item Son état initial est le mot vide, son état final est $m$.
+\end{itemize}
+\paragraph{Q.1} Montrer que cet automate reconnaît $A^* m$.
+\paragraph{Q.2} Montrer que 
+\[B(ua) = \left\{ 
+    \begin{array}{ll}
+		B(u)a  & \mbox{si } B(u)a\mbox{ est un préfixe de }u \\
+		B(B(u)a) & \mbox{sinon.}
+	\end{array} \right. \]
+\subsection{Implémentation}
+On représentera l'état correspondant au préfixe de $m$ de taille $i$ par l'entier
+$i$. La table de transition sera une matrice de taille $(|m|+1) \times |A|$~:
+la matrice vaut $j$ à l'indice $i,a$ ssi on a la transition $m_0 ... m_{i-1} 
+\xrightarrow{a} m_0 ... m_{j-1}$. La question précédente fournit un moyen de 
+remplir cette matrice.
+\paragraph{Q.1} Écrire une fonction \texttt{automate : mot -> adc} qui construit 
+l'ADC reconnaissant $A^* m$ par cette méthode.
+\paragraph{Q.2} En déduire une fonction \texttt{kmp : mot -> mot -> int} qui 
+résout le problème initial par l'algorithme de Knuth-Morris-Pratt. Quelle est 
+sa complexité~?
+
+\section{Une bonne idée~: l'astuce de Boyer-Moore} 
+Pour comparer les mots $m$ et $t[i..i+|m|-1]$, nos précédents 
+algorithmes commençaient par comparer les lettres $m_0$ et $t_i$. Boyer et 
+Moore ont eu l'idée de commencer par comparer $m_{|m|-1}$ et $t_{i+|m|-1}$. Par 
+exemple, si la lettre $t_{i+|m|-1}$ n'apparaît pas dans $m$, on est sûr que $m$ 
+ne sera présent à aucune des positions $i, i+1, \dots i+|m|-1$, et on peut donc 
+continuer en essayant de trouver $m$ à la position $i+|m|$.
+
+Plus précisément, on va tester dans l'ordre l'égalité des lettres
+\[m_{|m|-1} = t_{i+|m|-1}, \ \dots, \ m_1 = t_{i+1}, \ m_0 = t_i.\]
+En cas d'échec, notons $m_k \neq t_{i+k}$ la première différence constatée. Soit 
+$m_{k-p}$ la dernière occurrence de la lettre $t_{i+k}$ dans $m$ avant la 
+position $k$ (par convention, $k-p=-1$ si la lettre $t_{i+k}$ ne figure pas dans
+$m$ avant la position $k$). On remplace alors $i$ par $i+p$ et on reprend les 
+tests à cette nouvelle position.
+\paragraph{Q.1} Faire tourner l'algorithme à la main pour chercher le sous-mot 
+\texttt{"tori"} dans le mot \texttt{"torodusumotori"}.
+\paragraph{Q.2} Justifier la validité de l'algorithme proposé.
+\paragraph{Q.3} Écrire une fonction \texttt{bm : mot -> mot -> int} qui résout
+le problème initial par cette méthode. Il faudra notamment trouver un moyen de 
+connaître rapidement la dernière position d'une lettre $a$ dans le mot $m$ avant
+la position $k$. Quelle est la complexité dans le pire des cas~?
+\section{Questions supplémentaires pour faire bonne mesure}
+\paragraph{Q.1} Dans l'algorithme de Knuth-Morris-Pratt, l'automate construit 
+est-il minimal~?
+\paragraph{Q.2} Dans l'algorithme naïf, évaluer la complextié en moyenne~: si 
+le texte $t$, l'indice $i$ et la longueur $l=|m|$ du mot sont fixées, et que $m$ 
+est un mot aléatoire pouvant valoir n'importe quel mot de longueur $l$ de manière 
+équiprobable, on évaluera la quantité
+\[\frac1{|A|^l} \sum_{ m \ \mathrm{tq} \ |m| = l} N(t,m,i) \]
+où $N(t,m,i)$ est le nombre de comparaisons effectuées pour savoir si 
+$m=t[i..i+l-1]$.
+
+On montrera que cette quantité est plus petite que $\frac{|A|}{|A|-1}$.
+
+Remarquez que le même calcul vaut si $m$ est fixé et $t$ est aléatoire.
 \end{document}

@@ -77,7 +77,7 @@ $m$.
 \subsection{Prolégomènes}
 \paragraph{Q.1} Construire à la main un ADC reconnaissant $A^* m$ pour $m="aabaac"$.
 \paragraph{Q.2} Pourquoi veut-on que l'automate soit déterministe complet~? 
-Proposer une structure de données pour représenter un automate. On notera 
+Proposer une structure de données pour représenter un ADC. On notera 
 \texttt{adc} ce type.
 \paragraph{Q.3} En supposant notre automate construit, écrire une fonction 
 \texttt{position : adc -> mot -> int} qui, appliquée à l'ADC reconnaissant $A^* m$ 
@@ -108,7 +108,7 @@ On représentera l'état correspondant au préfixe de $m$ de taille $i$ par l'en
 $i$. La table de transition sera une matrice de taille $(|m|+1) \times |A|$~:
 la matrice vaut $j$ à l'indice $i,a$ ssi on a la transition $m_0 ... m_{i-1} 
 \xrightarrow{a} m_0 ... m_{j-1}$. La question précédente fournit un moyen de 
-remplir cette matrice.
+remplir cette matrice, et donc de fabriquer l'ADC.
 \paragraph{Q.1} Écrire une fonction \texttt{automate : mot -> adc} qui construit 
 l'ADC reconnaissant $A^* m$ par cette méthode.
 \paragraph{Q.2} En déduire une fonction \texttt{kmp : mot -> mot -> int} qui 
@@ -120,8 +120,8 @@ Pour comparer les mots $m$ et $t[i..i+|m|-1]$, nos précédents
 algorithmes commençaient par comparer les lettres $m_0$ et $t_i$. Boyer et 
 Moore ont eu l'idée de commencer par comparer $m_{|m|-1}$ et $t_{i+|m|-1}$. Par 
 exemple, si la lettre $t_{i+|m|-1}$ n'apparaît pas dans $m$, on est sûr que $m$ 
-ne sera présent à aucune des positions $i, i+1, \dots i+|m|-1$, et on peut donc 
-continuer en essayant de trouver $m$ à la position $i+|m|$.
+ne sera présent à aucune des positions $i, i+1, \dots i+|m|-1$, et on peut sauter
+$|m|$ cases en essayant directement de trouver $m$ à la position $i+|m|$~!
 
 Plus précisément, on va tester dans l'ordre l'égalité des lettres
 \[m_{|m|-1} = t_{i+|m|-1}, \ \dots, \ m_1 = t_{i+1}, \ m_0 = t_i.\]
@@ -134,9 +134,9 @@ tests à cette nouvelle position.
 \texttt{"tori"} dans le mot \texttt{"torodusumotori"}.
 \paragraph{Q.2} Justifier la validité de l'algorithme proposé.
 \paragraph{Q.3} Écrire une fonction \texttt{bm : mot -> mot -> int} qui résout
-le problème initial par cette méthode. Il faudra notamment trouver un moyen de 
-connaître rapidement la dernière position d'une lettre $a$ dans le mot $m$ avant
-la position $k$. Quelle est la complexité dans le pire des cas~?
+le problème initial par l'algorithme de Boyer-Moore. Il faudra notamment trouver 
+un moyen de connaître rapidement la dernière position d'une lettre $a$ dans le 
+mot $m$ avant la position $k$. Quelle est la complexité dans le pire des cas~?
 \section{Questions supplémentaires pour faire bonne mesure}
 \paragraph{Q.1} Dans l'algorithme de Knuth-Morris-Pratt, l'automate construit 
 est-il minimal~?

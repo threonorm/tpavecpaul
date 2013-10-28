@@ -43,7 +43,7 @@ vous d'en utiliser d'autres).
 \section{Algorithme naïf}
 L'idée la plus simple est de tester successivement toutes les positions $i$ 
 jusqu'à trouver une occurrence de \texttt{m}.
-\paragraph{Q.1} Écrire une fonction \texttt{naif : mot -> mot -> int} qui 
+\paragraph{Q.1} Écrire une fonction \texttt{naif : mot -> mot -> int} qui 
 résout le problème par l'algorithme naïf. Quelle est sa complexité~?
 \paragraph{Q.2} Peut-on améliorer cet algorithme si on suppose que toutes les
 lettres de \texttt{m} sont différentes~?
@@ -58,7 +58,7 @@ seulement dans ce cas on testera si $t_i...t_{i+|m|-1} = m$.
 que cette méthode présente un intérêt~?
 
 À cet égard, une bonne fonction $h$ est donnée par
-\[h(u_0u_1\dots u_{|m|-1}) = \sum_{i=0}^{|m-1|} q^i t_{|m|-1-i} \mod p\]
+\[h(u_0u_1\dots u_{|m|-1}) = \sum_{i=0}^{|m|-1} q^i t_{|m|-1-i} \mod p\]
 où $q$ est une base choisie, par exemple $|A|$. Autrement dit, on réprésente la
 chaîne $u_0u_1\dots u_{|m|-1}$ comme un entier en base $q$, et on réduit cet 
 entier modulo $p$. Dans notre cas, on prendra $q=|A|=10$ et $p=17$.
@@ -121,7 +121,7 @@ algorithmes commençaient par comparer les lettres $m_0$ et $t_i$. Boyer et
 Moore ont eu l'idée de commencer par comparer $m_{|m|-1}$ et $t_{i+|m|-1}$. Par 
 exemple, si la lettre $t_{i+|m|-1}$ n'apparaît pas dans $m$, on est sûr que $m$ 
 ne sera présent à aucune des positions $i, i+1, \dots i+|m|-1$, et on peut sauter
-$|m|$ cases en essayant directement de trouver $m$ à la position $i+|m|$~!
+$|m|$ cases en essayant directement de trouver $m$ à la position $i+|m|$.
 
 Plus précisément, on va tester dans l'ordre l'égalité des lettres
 \[m_{|m|-1} = t_{i+|m|-1}, \ \dots, \ m_1 = t_{i+1}, \ m_0 = t_i.\]
@@ -140,10 +140,10 @@ mot $m$ avant la position $k$. Quelle est la complexité dans le pire des cas~?
 \section{Questions supplémentaires pour faire bonne mesure}
 \paragraph{Q.1} Dans l'algorithme de Knuth-Morris-Pratt, l'automate construit 
 est-il minimal~?
-\paragraph{Q.2} Dans l'algorithme naïf, évaluer la complextié en moyenne~: si 
-le texte $t$, l'indice $i$ et la longueur $l=|m|$ du mot sont fixées, et que $m$ 
+\paragraph{Q.2} Dans l'algorithme naïf, évaluer la complextié en moyenne~: si on 
+fixe le texte $t$, l'indice $i$ et la longueur $l=|m|$ du mot cherché, et que $m$ 
 est un mot aléatoire pouvant valoir n'importe quel mot de longueur $l$ de manière 
-équiprobable, on évaluera la quantité
+équiprobable, on évalue la quantité
 \[\frac1{|A|^l} \sum_{ m \ \mathrm{tq} \ |m| = l} N(t,m,i) \]
 où $N(t,m,i)$ est le nombre de comparaisons effectuées pour savoir si 
 $m=t[i..i+l-1]$.
@@ -151,4 +151,42 @@ $m=t[i..i+l-1]$.
 On montrera que cette quantité est plus petite que $\frac{|A|}{|A|-1}$.
 
 Remarquez que le même calcul vaut si $m$ est fixé et $t$ est aléatoire.
+
+\section{Problème ouvert}
+Après avoir choisi un type pour représenter un automate quelconque, coder en Caml
+l'algorithme de déterminisation vu en cours.
+
+On pourra utiliser le module "set", disponible en Caml Light, qui permet de 
+manipuler des ensembles. On commencera par lancer 
+\texttt{\#open "set" ;;} \footnote{Sans charger ce module, on peut aussi accéder à 
+ses fonctions en écrivant leur nom précédé de \texttt{set\_\_} .} qui
+permet de charger les fonctions de ce modules. On disposera alors du type 
+\texttt{'a t} qui correspond à un ensemble dont les éléments sont de type 
+\texttt{'a}. Quelques fonctions de ce module sont~:
+\begin{itemize}
+\item \texttt{empty: ('a -> 'a -> int) -> 'a t} qui crée un ensemble vide 
+ordonné par la relation d'ordre passée en argument. Cette-dernière est une 
+fonction \texttt{f : 'a -> 'a -> int} telle que \texttt{f a b} renvoie $0$ si 
+$a=b$, est strictement négative si $a<b$ et est strictement positive si $a>b$. 
+Par exemple, pour des \texttt{int t}, on pourra utiliser 
+\texttt{f = fun a b -> a - b}.
+\item \texttt{is\_empty: 'a t -> bool} teste si un ensemble est vide.
+\item \texttt{mem: 'a -> 'a t -> bool} est le test d'appartenance d'un élément.
+\item \texttt{add: 'a -> 'a t -> 'a t} ajoute un élément.
+\item \texttt{remove: 'a -> 'a t -> 'a t} enlève un élément, laisse l'ensemble 
+inchangé si l'élément n'est pas présent.
+\item \texttt{union: 'a t -> 'a t -> 'a t} réalise l'union de deux ensembles.
+\item \texttt{inter: 'a t -> 'a t -> 'a t} réalise l'intersection de deux 
+ensembles.
+\item \texttt{diff: 'a t -> 'a t -> 'a t} réalise la différence de deux 
+ensembles.
+\item \texttt{equal: 'a t -> 'a t -> bool} dit si deux ensembles sont égaux.
+\item \texttt{choose: 'a t -> 'a} renvoie un élément quelconque de l'ensemble, 
+lève l'exception \texttt{Not\_found} si l'ensemble est vide.
+\item \texttt{elements: 'a t -> 'a list} renvoie la liste des éléments d'un 
+ensemble.
+\end{itemize}
+Vous pouvez aussi coder votre propre type \texttt{ensemble} et les fonctions 
+nécessaires...
 \end{document}
+

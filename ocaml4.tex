@@ -1,0 +1,51 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Caml-TD3 : Relations, graphes et votes.}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}\and Paul Melotti}
+\maketitle{}
+
+\subsection{Graphe de relation}
+
+Dans ce sujet on va s'intéresser à visualiser graphiquement des
+propriétés de relations. Pour représenter une relation binaire $\mathcal{R}$ sur un ensemble
+$X$, on va construire le graphe suivant : 
+\begin{itemize}
+\item Les sommets sont les éléments de l'ensemble.
+\item On construit une arête (orientée) $(s,t)$ lorsque $(s,t)\in
+\mathcal{R}$
+\end{itemize}
+\paragraph{Q.1}
+On implémente une relation binaire sur un ensemble fini X, par son graphe
+comme définit plus haut. Et on représente en Caml ce graphe par sa
+matrice d'adjacence. Construisez le graph correspondant à la relation de
+divisibilité entière sur l'ensemble $\{1,2,\dots,9\}$
+
+\paragraph{Q.2}
+Décrire quelles propriétés particulières vérifie le graphe lorsque la
+relation est :
+\begin{itemize}
+\item Réflexive
+\item Symétrique
+\item Transitive
+\item Antisymétrique
+\end{itemize}  
+Ecrire des fonctions qui étant donné un graphe de relation, vérifient si
+la relation associée est Réflexive, Symétrique, \dots.
+
+\paragraph{Q.3}
+
+
+\end{document}

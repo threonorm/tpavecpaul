@@ -10,14 +10,14 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 
-\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+%\setmainfont[Numbers=OldStyle]{Linux Libertine O}
 
 \begin{document}
 \title{Caml-TD3 : Relations, graphes et votes.}
 \author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}\and Paul Melotti}
 \maketitle{}
 
-\subsection{Graphe de relation}
+\section{Graphe de relation}
 
 Dans ce sujet on va s'intéresser à visualiser graphiquement des
 propriétés de relations. Pour représenter une relation binaire $\mathcal{R}$ sur un ensemble
@@ -27,13 +27,13 @@ $X$, on va construire le graphe suivant :
 \item On construit une arête (orientée) $(s,t)$ lorsque $(s,t)\in
 \mathcal{R}$
 \end{itemize}
-\paragraph{Q.1}
+\paragraph{Question.1\\}
 On implémente une relation binaire sur un ensemble fini X, par son graphe
 comme définit plus haut. Et on représente en Caml ce graphe par sa
 matrice d'adjacence. Construisez le graph correspondant à la relation de
 divisibilité entière sur l'ensemble $\{1,2,\dots,9\}$
 
-\paragraph{Q.2}
+\paragraph{Question.2\\}
 Décrire quelles propriétés particulières vérifie le graphe lorsque la
 relation est :
 \begin{itemize}
@@ -42,10 +42,33 @@ relation est :
 \item Transitive
 \item Antisymétrique
 \end{itemize}  
-Ecrire des fonctions qui étant donné un graphe de relation, vérifient si
-la relation associée est Réflexive, Symétrique, \dots.
+Écrire des fonctions qui étant donné un graphe de relation, vérifient si
+la relation associée est Réflexive, Symétrique\dots
 
-\paragraph{Q.3}
+\paragraph{Question.3\\}
+Si on part d'une relation d'équivalence. Comment se manifeste une classe
+d'équivalence dans le graphe. Écrire une fonction qui étant donné une
+relation d'équivalence, renvoit l'ensemble des classes d'équivalence
+(comme une liste de listes).
 
+\paragraph{Question.4\\}
+Étant donné une relation $\mathcal{R}$ on appelle la cloture refléxive (resp. transitive,
+symétrique \dots), la plus petite relation réflexive (resp. transitive,
+symétrique \dots) qui contient $\mathcal{R}$. Écrire des fonctions qui
+étant donné une relation, renvoient la cloture transitive, symétrique\dots
+
+\paragraph{Question.5\\}
+A quoi ressemble un ordre total\,? On appelle linéarisation d'un ordre
+partiel, un ordre total qui contient cet ordre partiel. Écrire une
+fonction qui linéarise un ordre partiel donné en entrée.
+ 
+\section{Paradoxe de Condorcet}
+
+\paragraph{Question. \\}
+La relation obtenue est-elle un ordre partiel\,? Est-elle transitive\,?
+Y-a-t-il un élément maximum\,?
+
+\paragraph{Question. n\\}
+Proposer une manière de résoudre le paradoxe de Condorcet.
 
 \end{document}

@@ -19,6 +19,9 @@
 
 \section{Graphe de relation}
 
+Le but du sujet est de vous faire griffoner un nombre maximum de petits
+dessins. Vous êtes donc conviés à sortir une feuille et à réfléchir avec
+ce nouvel objet qu'est le graphe. 
 Dans ce sujet on va s'intéresser à visualiser graphiquement des
 propriétés de relations. Pour représenter une relation binaire $\mathcal{R}$ sur un ensemble
 $X$, on va construire le graphe suivant : 
@@ -82,10 +85,10 @@ une fonction d'un graphe dans l'autre, et détermine si cette fonction est
 un morphisme de graphe. 
 
 \paragraph{Question. 2\\}
-Qu'est-ce qu'un morphisme de graphes pour le monde des relations. 
+Qu'est-ce qu'un morphisme de graphes pour le monde des relations d'ordres. 
 
-\paragraph{Facultatif culturel:\\} Écrire une fonction qui détermine si deux graphes
-sont isomorphes. Quelle est la complexité de ce programme.
+\paragraph{Facultatif culturel\,:\\} Écrire une fonction qui détermine si deux graphes
+sont isomorphes. Quelle est la complexité de votre algorithme\,?
 
 \section{Coloriage de graphes}
 
@@ -99,13 +102,40 @@ Montrer que tout arbre est 2-coloriable.
 \paragraph{Question. 2\\}
 On va encoder un coloriage par un tableau d'entier, de la taille du
 nombre de sommets du graphe. Montrer que tout graphe de degrés borné par
-$k$, est $k+1$-coloriable. (Le degrés d'un sommet est le nombre de voisin
+$k$, est $k+1$-coloriable. Le degrés d'un sommet est le nombre de voisin
 de ce sommet, le degrés d'un graphe et le maximum des degrés de ses
-sommets). Écrire une fonction qui renvoit un tel coloriage. 
+sommets. Écrire une fonction qui renvoit un tel coloriage. 
 
 \paragraph{Question. 3\\}
 On définit le nombre chromatique du graphe comme le plus petit $k$ tel que
 G soit $k$-coloriable. Si c'est le graphe d'une relation d'equivalence, à quoi
-correspond ce k?
+correspond ce k\,?
+
+\section{Une dernière notion : Circuits Hamiltoniens et Eulériens}
+Ici on va considérer des graphes non-orientés, connexe.
+On appelle un circuit Hamiltonien (resp. Eulérien) un chemin dans un graphe qui passe une
+et une seule fois par chaque sommet (resp. arête). Contrairement à votre
+intuition légitime de deux problèmes de complexité semblable. On pense
+que l'un est beaucoup plus difficile que l'autre. 
+
+\paragraph{Question. 1\\} Écrire une fonction \texttt{isHamiltonian} qui
+décide si un graphe est hamiltonien, et si oui renvoit un tel chemin.
+Quelle est la complexité de votre algorithme\,? \emph{Culture\,: C'est le
+bien connu problème du voyageur de commerce.}
+
+\paragraph{Question. 2\\}
+On appelle code de Gray une énumération des entiers de $[0,2^n-1]$ par
+des mots binaires de n bits, telle que deux entiers successifs ont des
+représentants qui ne diffèrent que d'un bit. En utilisant la question
+précèdente sur un graphe bien choisit,  montrez l'existence d'un tel code
+de Gray pour $n=4$. Ceci était une $\epsilon-$introduction à la théorie
+des codes correcteurs d'erreurs. C'est \emph{*intéressant*}. Certains
+code de Gray sont simples à calculer\,: on pourra prendre 2mn pour se
+documenter.
+
+\paragraph{Question. 3\\} Prouvez qu'un graphe connexe non orienté (d'un seul tenant) possède un circuit
+Eulérien si et seulement si chaque sommet est incident à un nombre pair
+d'arêtes. Écrire une fonction Caml \texttt{isEulerian} qui décide si un graphe possède un
+cycle eulérien. 
 
 \end{document}

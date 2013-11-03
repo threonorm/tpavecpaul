@@ -9,6 +9,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{enumerate}
 
 %\setmainfont[Numbers=OldStyle]{Linux Libertine O}
 
@@ -24,49 +25,91 @@ dessins. Vous êtes donc conviés à sortir une feuille et à réfléchir avec
 ce nouvel objet qu'est le graphe. 
 Dans ce sujet on va s'intéresser à visualiser graphiquement des
 propriétés de relations. Pour représenter une relation binaire $\mathcal{R}$ sur un ensemble
-$X$, on va construire le graphe suivant : 
+$X$, on va construire le graphe suivant~: 
 \begin{itemize}
 \item Les sommets sont les éléments de l'ensemble.
-\item On construit une arête (orientée) $(s,t)$ lorsque $(s,t)\in
-\mathcal{R}$
+\item On construit une arête (orientée) $(s,t)$ lorsque $s \mathcal{R} t$.
 \end{itemize}
+On note $\mathcal{G}_{\mathcal{R}}$ ce graphe.
 \paragraph{Question. 1\\}
-On implémente une relation binaire sur un ensemble fini X, par son graphe
-comme définit plus haut. Et on représente en Caml ce graphe par sa
-matrice d'adjacence. Construisez le graph correspondant à la relation de
-divisibilité entière sur l'ensemble $\{1,2,\dots,9\}$
+On représente une relation binaire sur un ensemble fini $X$ par son graphe.
+On représente en Caml ce graphe par sa
+\textit{matrice d'adjacence}~: c'est une matrice de booléens de taille 
+$|X| \times |X|$, telle que l'indice $s,t$ vaut \texttt{true} ssi 
+$s\mathcal{R} t$.
+
+Dessinez le graphe et écrivez la matrice d'adjacence pour les relations 
+suivantes~:
+\begin{itemize}
+\item divisibilité entière sur l'ensemble $X=\{1,2,\dots,6\}$~;
+\item inclusion ensembliste sur les parties de $\{riri;fifi;loulou\}$.
+\end{itemize}
 
 \paragraph{Question. 2\\}
-Décrire quelles propriétés particulières vérifie le graphe lorsque la
-relation est :
-\begin{itemize}
-\item Réflexive
-\item Symétrique
-\item Transitive
-\item Antisymétrique
-\end{itemize}  
-Écrire des fonctions qui étant donné un graphe de relation, vérifient si
-la relation associée est Réflexive, Symétrique\dots
+Écrire des fonctions~:
+\begin{enumerate}[a)]
+\item \texttt{complet: int -> bool vect} qui étant donné le cardinal $n$ de $X$
+renvoie le graphe de la \textit{relation complète} sur $X$, notée $\mathcal{C}$,
+définie par~: $\forall x, y, \ x \mathcal{C} y$.
+\item \texttt{diag: int -> bool vect} qui étant donné le cardinal $n$ de $X$
+renvoie le graphe de la \textit{relation diagonale} sur $X$, notée $\Delta$, 
+définie par~: $x \Delta y \ \mathrm{ssi} \ x=y$.
+\item \texttt{intersection: bool vect -> bool vect -> bool vect} qui étant donné
+deux graphes $\mathcal{G}$ et $\mathcal{G'}$ supposés de même taille renvoie leur 
+intersection, c'est-à-dire le graphe dont les arêtes sont celles de $\mathcal{G}$ 
+\textit{et} celles de $\mathcal{G'}$.
+\item \texttt{union: bool vect -> bool vect -> bool vect} qui étant donné
+deux graphes $\mathcal{G}$ et $\mathcal{G'}$ supposés de même taille renvoie leur 
+union, c'est-à-dire le graphe dont les arêtes sont celles de $\mathcal{G}$ 
+\textit{ou} celles de $\mathcal{G'}$.
+\item \texttt{inclus: bool vect -> bool vect -> bool} qui teste si un graphe
+est inclus dans un autre, supposé de même taille.
+\item \texttt{recip: bool vect -> bool vect} qui étant donné un graphe 
+$\mathcal{G}$ renvoie sa réciproque, c'est-à-dire le graphe qui contient l'arête 
+$(s,t)$ ssi $\mathcal{G}$ contient l'arête $(t,s)$.
+\item \texttt{compose: bool vect -> bool vect -> bool vect} qui étant donné 
+deux graphes $\mathcal{G}$ et $\mathcal{G'}$ supposés de même taille renvoie leur 
+composée, c'est-à-dire le graphe qui contient l'arête $(s,t)$ ssi il existe 
+$u$ tel que $(s,u)\in \mathcal{G}$ et $(u,t) \in \mathcal{G'}$.
+\end{enumerate}
 
 \paragraph{Question. 3\\}
-Si on part d'une relation d'équivalence. Comment se manifeste une classe
-d'équivalence dans le graphe. Écrire une fonction qui étant donné une
-relation d'équivalence, renvoit l'ensemble des classes d'équivalence
-(comme une liste de listes).
+Décrire en termes d'union, d'intersection et d'inclusion de graphes les 
+propriétés suivantes sur la relation~:
+\begin{itemize}
+\item Réflexive ($\forall x, \ x\mathcal{R}x$)
+\item Symétrique ($\forall x,y, \ x\mathcal{R}y \implies y\mathcal{R}x$)
+\item Transitive ($\forall x,y,z, \ x\mathcal{R}y \ \mathrm{et} \ y\mathcal{R}z \implies x\mathcal{R}z$)
+\item Antisymétrique ($\forall x,y, \ x\mathcal{R}y \ \mathrm{et} \ y\mathcal{R}x \implies x=y$)
+\item Totale ($\forall x,y, \ x\mathcal{R}y \ \mathrm{ou} \ y\mathcal{R}x$)
+\end{itemize}  
+Écrire des fonctions qui étant donné un graphe de relation, testent ces 
+différentes propriétés.
 
 \paragraph{Question. 4\\}
-Étant donné une relation $\mathcal{R}$ on appelle la cloture refléxive (resp. transitive,
-symétrique \dots), la plus petite relation réflexive (resp. transitive,
-symétrique \dots) qui contient $\mathcal{R}$. Écrire des fonctions qui
-étant donné une relation, renvoient la cloture transitive, symétrique\dots
+\begin{enumerate}[a)]
+\item Étant donné une relation $\mathcal{R}$ on appelle la clôture refléxive
+la plus petite relation réflexive qui contient $\mathcal{R}$. Écrire une 
+fonction qui étant donné le graphe d'une relation renvoie le graphe de sa 
+clôture réflexive.
+\item Même question pour ``symétrique''.
+\item (*) Même question pour ``transitive''.
+\end{enumerate}
 
 \paragraph{Question. 5\\}
-A quoi ressemble un ordre total\,? On appelle linéarisation d'un ordre
+On suppose dans cette question que $\mathcal{R}$ est une relation d'équivalence.
+Comment se manifeste une classe
+d'équivalence dans $\mathcal{G}_{\mathcal{R}}$~? Écrire une fonction qui étant 
+donné le graphe d'une relation d'équivalence, renvoie l'ensemble des classes 
+d'équivalence (au choix comme une liste de listes ou comme un tableau de listes).
+
+\paragraph{Question. 6\\}
+(*) À quoi ressemble un ordre total~? On appelle linéarisation d'un ordre
 partiel, un ordre total qui contient cet ordre partiel. Écrire une
 fonction qui linéarise un ordre partiel donné en entrée.
  
 \section{Paradoxe de Condorcet}
-On considère le système de vote suivant\,: 3 candidats pour l'élection,
+On considère le système de vote suivant~: 3 candidats pour l'élection,
 60 votants. Chaque votant donne une liste ordonnée de ses préférences.
 \paragraph{Question. 1\\}
 Considérons la situation         
@@ -77,9 +120,9 @@ Considérons la situation
 \item 10 votants préfèrent\,: C > A > B
 \item 8 votants préfèrent\,: C > B > A
 \end{itemize}
-Construire le graphe de la relation suivante\,: on considère que X est
-mieux que Y si il y a une majorité de gens qui pensent que X est mieux
-que Y.
+Construire le graphe de la relation suivante\,: on considère que Y est moins 
+bien que X ($Y\mathcal{R}X$) si il y a une majorité de gens qui pensent que Y 
+est moins bien que X.
 \paragraph{Question. 2\\}
 La relation obtenue est-t-elle:
 \begin{itemize}

@@ -66,13 +66,27 @@ partiel, un ordre total qui contient cet ordre partiel. Écrire une
 fonction qui linéarise un ordre partiel donné en entrée.
  
 \section{Paradoxe de Condorcet}
-
+On considère le système de vote suivant\,: 3 candidats pour l'élection,
+100 votants. Chaque votant donne une liste ordonnée de ses préférences.
 \paragraph{Question. 1\\}
-
+Considérons la situation         
+\begin{itemize}
+\item 23 votants préfèrent\,: A > B > C
+\item 17 votants préfèrent\,: B > C > A
+\item 2 votants préfèrent\,: B > A > C
+\item 10 votants préfèrent\,: C > A > B
+\item 8 votants préfèrent\,: C > B > A
+\end{itemize}
+Construire le graphe de la relation suivante\,: on considère que X est
+mieux que Y si il y a une majorité de gens qui pensent que X est mieux
+que Y.
 \paragraph{Question. 2\\}
-La relation obtenue est-elle un ordre partiel\,? Est-elle transitive\,?
-Y-a-t-il un élément maximum\,?
-
+La relation obtenue est-t-elle:
+\begin{itemize}
+\item avec un élément maximum\,?
+\item un ordre partiel\,?
+\item transitive\,?
+\end{itemize}
 \paragraph{Question. 3\\}
 Proposer une manière de résoudre le paradoxe de Condorcet.
 

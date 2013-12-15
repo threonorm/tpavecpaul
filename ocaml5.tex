@@ -1,0 +1,168 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumerate}
+
+%\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Expressions régulières}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}}
+\maketitle{}
+Ce TP est un TP de compilation de Jean-Christophe
+Filliâtre  très légèrement modifié pour détailler certains points. 
+\\
+On va définir les expressions régulières sur un alphabet (donc les lettres
+seront des char). Une subtilité par rapport à ce que vous connaissez c'est qu'on
+va vouloir indexer les lettres, c'est à dire que l'expression régulière $a.(a+b)$
+va devenir $a_1.(a_2+b_1)$. Autrement dit les lettres d'une expression
+régulières sont pour ce TD des \texttt{char*int}. Pas de panique sur la
+signification de cet indice, c'est simplement une annotation qui servira plus
+tard, elle indique par exemple que $a_2$ est le second a en lisant de gauche à
+droite.
+
+\paragraph{Question.1\\}
+Proposer un type pour les expressions régulières, puis
+écrire une fonction \texttt{val null : regexp -> bool} qui détermine si
+$\epsilon$ appartient au langage reconnu par une expression régulière.
+
+\paragraph{Question.2\\}
+
+\subparagraph{a.}On va avoir besoin de manipuler des ensembles de lettres indexées, on va donc
+les représenter par des listes : \texttt{val : (char*int) list}. Faire rapidement les fonctions classiques sur
+les ensembles :
+\begin{itemize}
+\item Presence dans l'ensemble
+\item Ajout d'element
+\item Suppression d'element (si présent)
+\item Union d'ensembles
+\item Intersection d'ensembles
+\end{itemize}
+L'utilisation de listes pour représenter de tels ensembles est essentiellement
+pratique parce que facile à implémenter, mais les complexités sont pas
+optimales.
+Quelle structure de donnée vous pourriez utiliser ? Justifiez rapidement en
+comparant avec
+quelques arguments de complexités  (Je ne vous demande pas de l'implémenter).
+\\
+
+\subparagraph{b.}
+Écrire une fonction \texttt{val first : regexp - >  (char*int) list}
+qui calcule l'ensemble des premières lettres des mots reconnus par une
+expression régulière. (Il faut se servir de \texttt{val : null}).
+De même écrire une fonction \texttt{val last : regexp -> (char*int) list} 
+\\ Conseil universel, spécifié pour cette question : Réfléchissez sur papier,
+que ce soit clair, avant de commençer à coder.
+
+\paragraph{Question.3\\}
+En se servant de ce qui précède, écrire \texttt{val follow : (char*int) ->
+regexp-> (char*int) list} qui calcule l'ensemble des lettres qui peuvent suivre
+une lettre donnée dans l'ensemble des mots reconnus.
+On remarquera notamment que \texttt{d} est dans \texttt{follow c r} si et
+seulement si :
+\begin{itemize}
+\item soit il existe une sous-expression $r=r1.r2$ avec \texttt{d} élément de
+\texttt{first r2} et c élément de \texttt{last r1}
+\item soit il existe une sous-expression $r=r1^{*}$ avec d élément de
+\texttt{first r1}  et c élément de \texttt{last r1} 
+\end{itemize}
+
+\paragraph{Question.4\\}
+Pour tester si un mot est dans un langage définit par une expression régulière
+on va utiliser un outils que vous allez voir bientot (avez-vu?) : \emph{les
+automates}. Bon tout d'abord quelques précisions :
+\begin{itemize}
+\item Le but du TP est de vous donner une première intuition de cette notion,
+même si c'est avant le cours : pédagogie par l'immersion. Ainsi durant votre cours,
+il sera important d'essayer de visualiser chacune des notions qui sera
+présentée. Le but étant d'être à l'aise avec la notion d'automates et son lien
+étroit avec la notion de langages rationnel.
+\item Ce qui va être présenté ici n'est pas nécéssairement exactement dans la
+même forme que ce qui sera présenté en cours.
+\item Essentiellement le sujet établi un des sens du théorème de Kleene que vous
+allez certainement revoir en cours d'une manière différentes : \emph{Les
+langages reconnaissables par automates finis sont exactement les langages
+rationnels}.
+\item Pour ceux qui veulent aller plus loin, je conseil le livre \emph{Langage formels} d'Olivier
+Carton. 
+\end{itemize} 
+
+\hrulefill
+
+\emph{Moment de présentation des automates au tableau, si vous ne connaissez pas
+déjà.}
+
+\hrulefill
+
+Pour construire l'automate déterministe correspondant à une expression
+régulière r (un état est un ensemble de lettres indéxées) on fait :
+\begin{itemize}
+\item On ajoute un nouveau caractère $\sharp$ à la fin de r. (représenté
+('$\sharp$',-1)).
+\item L'état de départ est \texttt{first r}.
+\item On a une transition d'un état q à q' à la lecture du caractère c (ici le
+caractère est non indexé), si q' est l'union de tous les \texttt{follow ci r}
+pour tous les éléments ci de q tels que \texttt{fst ci=c}.
+\item les états d'acceptation sont ceux qui contiennent le caractère $\sharp$.
+\end{itemize}
+Ne paniquez pas si vous ne comprenez pas tout à la première lecture, laissez
+vous guider par les questions.
+
+\subparagraph{a.} Écrire une fonction \texttt{val nextstate : regexp ->
+(char*int) list-> char-> (char*int) list} qui cacule l'état résultant d'une
+transition.
+Pour représenter un automate on va avoir besoin de listes associatives
+(\texttt{type ('a,'b) assoc = (a*b) list;;}, encore
+une partie facile de TP ou il faut aller vite : on rappelle qu'une liste
+associative est une liste de la forme \texttt{(clef,elements) list}, un peu
+comme un dictionnaire. C'est une version simple des tables de hachage (table de
+hachage dans un tableau à une seule case). imaginez le comme un dictionnaire, ou
+vous cherchez selon le nom du mot (la clef), et ça vous renvoit la définition
+(l'élément). Ecrire les fonctions
+suivantes : 
+\begin{itemize}
+\item Ajout d'un élément à une liste associative
+\item Suppression d'un élément 
+\item Recherche par clef.
+\end{itemize}
+ 
+ Pour représenter un automate on va utiliser le type :
+\\\texttt{
+type autom = \{ \\
+start : (char,int) list;\\
+transit : ((char,int) list, ((char, (char,int) list ) assoc)  assoc;\\
+\}
+}\\
+Encore une fois pas de panique, le type à l'air compliqué, mais mettez des vrais
+noms concrets sur ça, et vous allez voir que c'est naturel!
+\\
+\subparagraph{b.}
+Écrire une fonction \texttt{val makeDfa: regexp -> autom} qui construit
+l'automate correspondant à une expression régulière. L'idée est de construire
+les états par nécessité, en partant de l'état initial. On pourra par exemple
+adopter l'approche suivante :
+\\
+\texttt{
+let makeDfa r = \\
+  let r = Concat (r, ('$\sharp$',-1) ) in\\
+  (* transitions en cours de construction *)\\
+  let trans = ref \[ \] in\\
+  let rec transitions q =\\
+    (* la fonction transitions construit toutes les transitions de l'état q,\\
+       si c'est la première fois que q est visité *)\\
+    ...\\
+  in\\
+  let q0 = first r in\\
+  transitions q0;\\
+  \{ start = q0; trans = !trans \}\\
+}
+
+\end{document}

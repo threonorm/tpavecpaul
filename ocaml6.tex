@@ -1,0 +1,76 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumerate}
+
+%\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Programmation dynamique}
+\author{Paul Melotti \and Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}}
+\maketitle{}
+
+\section{Multiplications matricielles optimales}
+Soit $A_1, \dots, A_n$ des matrices rectangulaires : 
+$A_1\in \mathcal{M}_{p_0,p_1}, A_2\in \mathcal{M}_{p_1,p_2}, \dots, A_n\in \mathcal{M}_{p_{n-1},p_n}$.
+On cherche à calculer le produit $A_1 \times \dots \times A_n$.
+On dispose du tableau $p = [|p_0 ; \dots p_n |]$ des tailles successives.
+
+\paragraph{Question.1}
+
+Combien de multiplications faut-il effectuer pour calculer le produit $A\times B$
+où $A\in \mathcal{M}_{p,q}$ et $B\in \mathcal{M}_{q,r}$ ?
+
+Par exemple, si $p=[|10;100;5;50|]$, combien faut-il d'opérations pour calculer
+le produit si on le parenthèse en $(A_1 \times A_2) \times A_3$ et en 
+$A_1 \times (A_2 \times A_3)$ ?
+\\
+
+On constate que l'ordre dans lequel on effectue les multiplications est 
+important. L'objectif de ce sujet est de trouver le parenthésage optimal pour 
+calculer le produit.
+
+Si $i <= j$, on note $m_{ij}$ le nombre minimal de multiplications scalaires 
+pour calculer le produit $A_i \dots A_j$, et $M$ la matrice des
+$m_{ij}$ (qui est triangulaire supérieure de diagonale nulle).
+
+Le parenthésage optimal de ce calcul sépare le produit en 
+$A_i \dots A_j = (A_i \dots A_k) (A_{k+1} \dots A_j)$ pour un certain indice de
+coupure $k\in [i;j-1]$. On note $s_{ij}$ ce $k$, et $S$ la matrice des $s_{ij}$.
+
+\paragraph{Question.2} Montrer que 
+\[m_{ij} = \left\{
+	\begin{array}{ll}
+		0  & \mbox{si } i=j \\
+		\min_{i\leq k < j} (m_{ik} + m_{k+1,j} + p_{i-1} p_k p_j) & \mbox{si i < j}.
+	\end{array}
+\right.\]
+Cette formule permet de remplir la matrice $M$ intelligemment si on calcule les
+coefficients dans un certain ordre, lequel ?
+
+\paragraph{Question.3} Écrire une fonction \texttt{couts : int vect -> int vect vect}
+qui étant donné le vecteur \texttt{p} renvoie la matrice \texttt{M}. Quelle est
+sa complexité ?
+
+\paragraph{Question.4} Modifier la fonction précédente en une fonction 
+\texttt{coupes : int vect -> int vect vect} qui étant donné \texttt{p} renvoie
+la matrice \texttt{S}.
+
+\paragraph{Question.5} Écrire une fonction \texttt{parenthesages : int vect -> unit}
+qui étant donné \texttt{p} imprime le parenthésage optimal. Par exemple :
+\begin{verbatim}#parenthesages [|3;2;1;4;2;2|] ;;
+((1)(2))(((3)(4))(5))- : unit = () \end{verbatim}
+
+\paragraph{Question.6} (*) Combien y a-t-il de façons de parenthéser le produit
+$A_1 \dots A_n$ ? Quelle serait la complexité d'un algorithme qui énumèrerait
+tous les parenthésages et calculerait le coût de chacun ?
+
+\end{document}

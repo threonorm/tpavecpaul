@@ -73,4 +73,59 @@ qui étant donné \texttt{p} imprime le parenthésage optimal. Par exemple :
 $A_1 \dots A_n$ ? Quelle serait la complexité d'un algorithme qui énumèrerait
 tous les parenthésages et calculerait le coût de chacun ?
 
+\section{Un peu de réflexion autour de la programmation dynamique}
+L'idée de la programmation dynamique est de pouvoir résoudre un problème
+d'\emph{optimisation} en
+commençant par résoudre des sous-problèmes et en recombinant les solutions de
+ces sous-problèmes. 
+
+Pour que celà soit possible, il faut que le problème ait une structure
+particulière. Par exemple s'il vérifie la propriété de sous-structure optimale :
+lorsqu'on a une solution optimale à notre problème, cette solution contient des
+solutions optimales à des sous-problèmes.
+Par exemple, pour la section précèdente, trouve un bon parenthèsage pour
+$A_1.\dots.A_n$ nous donne un bon parenthèsage pour un couple de 
+$A_1.\dots.A_i$ et $A_{i+1}.\dots.A_n$ .
+
+Autrement dit, la solution au gros problème, donne des solutions à des petits
+problèmes dont il est composé.
+
+
+\paragraph{Question.0 (orale)} Parfois les étudiants confondent récursivité et
+programmation dynamique. Pensez-y, pourquoi est-ce que ce n'est pas la
+même chose, pourquoi est-ce qu'il y pourrait y avoir confusion?
+
+\paragraph{Question.1} Donner un exemple de problème (autre que ceux du sujet),
+pour lequel il semble qu'on pourrait faire de la programmation dynamique. Donner
+un exemple de problème qui ne s'y prête pas du tout.
+\\\\
+Rien ne nous dit non plus que l'algorithme qu'on obtient par programmation
+dynamique est polynomial. On doit donc faire comme d'habitude des analyses de
+complexités.
+\paragraph{Question.2} Résoudre par programmation dynamique le problème du rendu
+de monnaie optimal : on dispose de pièces/billets (on en a autant qu'on veut!)
+des valeurs suivantes : $\{s_1,\dots,s_n\}$, où les $s_i$ sont triées par ordre
+croissants. Déterminer le nombre minimum de pièces/billets qu'il faut pour payer
+une sommer $s$.  
+
+
+\section{Distance de Levensthein}
+
+On appelle distance de Levenshtein, ou distance d'édition, la fonction
+qui a deux chaines de caractères associe le nombre minimum de
+ajout/suppression/modification nécessaires pour passer d'une chaine à l'autre.
+
+\paragraph{Question.1} Est-ce une distance? (Si oui le prouver, si non donner
+un contre-exemple).
+\paragraph{Question.2} Repérer quel est la propriété de sous-structure qui va
+permettre de résoudre le problème par programmation dynamique. Écrire sur papier
+votre algorithme. \emph{Indice:} On pourra chercher à calculer tous les
+distances pour passer des chaines $s_1 [0..i]$ à $s_2 [0 .. j]$ pour tous les
+$i$ et $j$ plus petits que n.
+\paragraph{Question.3} Implémenter l'algorithme.
+
+
+\section{Un dernier pour la route.}
+Écrire un algorithme qui trouve la plus longue sous-séquence commune à deux
+chaines de caractères, en temps polynomial.
 \end{document}

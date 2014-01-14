@@ -148,13 +148,13 @@ seul élément élément dans la pile, alors $u$ était bien une écriture postf
 
 \paragraph{Question.3} On représente le mot par une \texttt{int*string list} :
 les éléments de cette liste sont les symboles dans $\Sigma$, représentés sous
-forme de couples où l'entier indique leur arité et la chaîne de caractère leur
+forme de couples où l'entier indique leur arité (0,1 ou 2) et la chaîne de caractère leur
 nom. Par exemple, \texttt{[(0,"1");(0,"x");(2,"+")]} représente le mot \texttt{1 x +}.
 
 Écrire une fonction \texttt{arbre\_de\_liste : int*string list -> expr} qui 
 calcule l'expression associée à cette écriture, grâce à l'algorithme précédent.
 
-\paragraph{Question.4} Cette écriture sous forme de liste n'est pas non plus
+\paragraph{Question.4 - Facultative} Cette écriture sous forme de liste n'est pas non plus
 très satisfaisante ; on aimerait bien pouvoir écrire carrément des chaînes de 
 caractères. Le problème qui consiste à transformer une chaîne de caractère
 en, mettons, la liste précédente, est un problème de \textit{parsing}. Dans cette

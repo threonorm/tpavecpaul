@@ -1,0 +1,234 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{framed}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumerate}
+\usepackage{qtree}
+
+%\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+\theoremstyle{definition}
+\newtheorem*{Ex}{Exemple}
+
+\begin{document}
+\title{TP7 : Syntaxe et sémantique}
+\author{Paul Melotti (\texttt{paul.melotti@ens.fr})}
+\maketitle{}
+
+Le but de ce TP est de comprendre l'intérêt des arbres syntaxiques et leur
+interprétation. Le cadre est le suivant : on dispose d'un ensemble de variables
+$V$, et d'un ensemble de symboles fonctionnels $\Sigma$. Un symbole $f \in \Sigma$
+est caractérisé par son \textit{arité} $\alpha (f) \in \mathbb{N}$, que vous 
+pouvez voir comme le ``nombre d'arguments'' de $f$. Un symbole $f\in \Sigma$
+d'arité 0 est appelé symbole constant.
+
+Une \textit{expression} sera un arbre étiqueté par $\Sigma \cup V$ tel que :
+\begin{itemize}
+\item les feuilles sont étiquetées par des variables ou des syboles constants
+\item les noeuds ayant $n$ fils sont étiquetés par des symboles d'arité $n$.
+\end{itemize}
+
+\begin{Ex}
+Pour représenter des expressions logiques en les variables $A$ et $B$,
+on prend :
+\begin{itemize}
+\item Symboles d'arité 0 : $\{ \mathrm{Vrai}, \mathrm{Faux}\}$
+\item Symboles d'arité 1 : $\{ \mathrm{not} \} $
+\item Symboles d'arité 2 : $\{ \wedge , \vee , \Rightarrow , \Leftarrow , \Leftrightarrow \} $
+\item Variables : $\{ A, B \}$.
+\end{itemize}
+Alors l'arbre suivant est une expression logique ; quelle formule logique 
+voudriez-vous qu'elle représente ?
+
+\Tree[.$\Leftrightarrow$ [.$\Rightarrow$ [.not [.A ] ] [.not [.B ] ] ]
+         [.$\Rightarrow$ [.B ] [.A ] ] ]
+\end{Ex}
+
+\section{Calcul formel}
+On va utiliser ces arbres pour faire du calcul formel, comme le fait
+peut-être votre calculatrice. Pour simplifier, on se limitera aux symboles 
+suivants :
+\begin{itemize}
+\item Symboles d'arité 0 : les flottants
+\item Symboles d'arité 1 : $\{ \exp \} $
+\item Symboles d'arité 2 : $\{ +, * \} $
+\item Variables : les caractères.
+\end{itemize}
+Pour manipuler ces arbres, on définit le type suivant :
+\begin{verbatim}type expr = Var of char
+            | Const of float
+            | Exp of expr
+            | Somme of expr*expr | Produit of expr*expr ;;\end{verbatim}
+\paragraph{Question.1} Écrire une fonction \texttt{calcule : expr -> float} qui
+prend en argument une expression et renvoie sa valeur. On déclenchera une 
+exception lorsqu'une variable apparaît dans l'expression.
+
+\paragraph{Question.2} Écrire une fonction \texttt{evalue : expr -> (char -> float) -> float}
+qui prend non seulement une expression, mais aussi une fonction qui dit ce que 
+valent les variables, et renvoie la valeur associée à l'expression.
+
+\paragraph{Question.3} Écrire une fonction \texttt{derive : char -> expr -> expr} qui 
+dérive une expression par rapport à la variable donnée en argument.
+
+\paragraph{Question.4} Que renvoie \texttt{derive `x` (Exp (Somme (Var `x`,Const 1.)))} ?
+Écrire une fonction \texttt{simplifie : expr -> expr} qui effectue quelques
+simplifications sur une expression.
+\\
+
+Dans cette partie, on est passé de la \textit{syntaxe} (façon d'organiser et de
+représenter les objets) à la \textit{sémantique} (liée au sens, interprétation
+de cette écriture). Les objets syntaxiques comme le symbole \texttt{Exp} 
+pourraient représenter n'importe quoi ; ici, on l'a \textit{interprété} comme
+la fonction exponentielle des réels. Par exemple, les expressions 
+\texttt{Exp(Const(0.))} et \texttt{Const(1.)} sont deux objets syntaxiques
+différents, mais leur interprétation est ici la même.
+
+Dans la partie suivante, on va faire quelque chose de purement syntaxique.
+
+\section{Syntaxe concrète}
+Vous avez dû vous rendre compte que les arbres syntaxiques sont bien utiles
+pour le programmeur, mais pas très pratiques pour l'utilisateur qui n'a pas
+envie d'écrire tout les temps des choses du style \texttt{Exp (Somme (Var `x`,Const 1.))}.
+On va ici voir comment passer d'écritures plus naturelles à la structure 
+d'arbres.
+
+On se placera dans le cas général suivant : on travaille avec le type
+ 
+\texttt{type expr = C of string | U of string*expr | B of string*expr*expr}
+
+où les \texttt{C} sont les constantes, les \texttt{U} (unaire) sont les 
+symboles d'arité 1, et les \texttt{B} (binaire) les symboles d'arité 2. Le
+\texttt{string} sert simplement à donner un nom à ces différents symboles, par exemple,
+on écrira \texttt{U("exp", B("+", C "x", C "1") )}. Remarquez qu'on n'a pas 
+différencié les constantes des variables, ce qui ne posera pas de problème dans
+ce qu'on va faire.
+
+\subsection{Forme postfixe}
+On appelle écriture postfixe d'une expression $t$ le mot de $\Sigma^*$  défini 
+inductivement par 
+\[Pos(t)=\left\lbrace
+\begin{array}{lcl}
+t & & \mathrm{si} \ t \ \mathrm{est constant}\\
+Pos(t_1)\dots Pos(t_n) f & & \mathrm{si} \ t = f(t_1,\dots t_n)
+\end{array}\right.\]
+
+\paragraph{Question.1} Écrire sous forme postfixe l'exemple d'arbre syntaxique 
+précédent.
+
+\paragraph{Question.2} Écrire une fonction \texttt{ecritpost : expr -> unit} qui
+imprime l'écriture postfixe d'une expression quelconque.
+\\
+
+On va maintenant s'intéresser au problème inverse : étant donné une écriture
+postfixe, comment retrouver l'arbre syntaxique associé ?
+\\
+
+Une méthode possible est la suivante : on utilise une pile $p$ initialement vide.
+On lit l'un après l'autre les symboles du mot :
+\begin{itemize}
+\item à chaque symbole constant, on l'empile
+\item à chaque symbole $f$ d'arité $n\geq 1$, on dépile successivement $t_n,\dots, t_1$
+(attention, l'ordre compte !) et on empile $f(t_1, \dots, t_n)$.
+\end{itemize}
+
+Il est possible de montrer\footnote{on ne demande pas de le faire. Mais c'est 
+un bon exercice, plutôt difficile...} que si le mot 
+correspondait à $Pos(t)$, alors l'algorithme ne déclenche pas d'erreur et qu'à la
+fin il ne reste dans la pile qu'un seul élément, l'expression $t$. Réciproquement, si 
+l'algorithme appliqué à un mot $u$ ne déclenche pas d'erreur et finit avec un 
+seul élément élément dans la pile, alors $u$ était bien une écriture postfixe.
+
+\paragraph{Question.3} On représente le mot par une \texttt{int*string list} :
+les éléments de cette liste sont les symboles dans $\Sigma$, représentés sous
+forme de couples où l'entier indique leur arité et la chaîne de caractère leur
+nom. Par exemple, \texttt{[(0,"1");(0,"x");(2,"+")]} représente le mot \texttt{1 x +}.
+
+Écrire une fonction \texttt{arbre\_de\_liste : int*string list -> expr} qui 
+calcule l'expression associée à cette écriture, grâce à l'algorithme précédent.
+
+\paragraph{Question.4} Cette écriture sous forme de liste n'est pas non plus
+très satisfaisante ; on aimerait bien pouvoir écrire carrément des chaînes de 
+caractères. Le problème qui consiste à transformer une chaîne de caractère
+en, mettons, la liste précédente, est un problème de \textit{parsing}. Dans cette
+petite introduction, nous utiliserons la convention suivante : les noms des
+constantes seront introduits par la lettre \texttt{C}, les fonctions unaires
+par la lettre \texttt{U} et les fonctions binaires par la lettre \texttt{B}. Ces
+trois lettres seront interdites dans les noms des fonctions et constantes.
+Par exemple, la chaîne \texttt{"C1CxB+"} correspond à l'exemple de la question
+précédente.
+
+Écrire une fonction \texttt{parse : string -> int*string list} qui transforme
+cette chaîne de caractère en la liste associée (on ne gardera pas les \texttt{C},
+\texttt{U} et \texttt{B} dans les noms), puis une fonction 
+\texttt{arbre\_de\_chaine : string -> expr} qui transforme une telle écriture en
+son arbre syntaxique.
+\begin{Ex}
+\begin{verbatim} #arbre_de_chaine "CxC1B+Uexp";;
+- : expr = U ("exp", B ("+", C "x", C "1"))\end{verbatim}
+\end{Ex}
+
+\subsection{Forme préfixe}
+L'écriture préfixe d'une expression $t$ est définie inductivement par :
+\[Pre(t)=\left\lbrace
+\begin{array}{lcl}
+t & & \mathrm{si} \ t \ \mathrm{est constant}\\
+f \ Pre(t_1)\dots Pre(t_n) & & \mathrm{si} \ t = f(t_1,\dots t_n)
+\end{array}\right.\]
+
+\paragraph{Question.6} La forme préfixe est-elle l'image miroir de la forme 
+postfixe ?
+
+\paragraph{Question.7} Refaire la question 3 dans le cas où la liste représente
+un mot sous forme préfixe.
+
+\textit{Indication :} on pourra écrire une fonction récursive qui prend en 
+argument une \texttt{int*char list} et renvoie l'arbre syntaxique associé au 
+début de la liste, ainsi que le reste de la liste.
+
+\section{Expressions rationnelles sur un alphabet $X$}
+Retour à l'interprétation sémantique, et à des choses que vous connaissez : on 
+veut manipuler des expressions rationnelles. On va donc utiliser les symboles 
+suivants :
+\begin{itemize}
+\item Symboles d'arité 0 : $X \cup \{ \epsilon \}$
+\item Symboles d'arité 1 : $\{ *, + \} $
+\item Symboles d'arité 2 : $\{ .\} $
+\item ...Pas de variables !
+\end{itemize}
+
+\paragraph{Question.1} Proposer un type \texttt{regexp} pour les expressions 
+rationnelles. On pourra prendre $X$ l'ensembles des \texttt{char}.
+
+\paragraph{Question.2} Écrire une fonction \texttt{avide : regexp -> bool} qui 
+détermine si $\epsilon$ appartient au langage.
+
+\paragraph{Question.3} Écrire une fonction \texttt{arden : regexp -> regexp -> regexp}
+qui étant donné deux expressions $A$ et $B$, avec $\epsilon \notin A$, résout
+l'équation $X=A.X + B$. Si $\epsilon \in A$ on renverra une erreur.
+
+\paragraph{Question.4} On considère le système d'inconnues les langages $X_1,...X_n$
+suivant :
+\[\left\lbrace
+\begin{array}{lcl}
+X_1 &=& A_{1,1}.X_1 + A_{1,2}.X_2 + \dots + A_{1,n}.X_n + B_1\\
+\dots \\
+X_n &=& A_{n,1}.X_1 + A_{n,2}.X_2 + \dots + A_{n,n}.X_n + B_n
+\end{array}\right.\]
+où on suppose que pour tous $i,j$, $\epsilon \notin A_{i,j}$.
+
+Écrire une fonction \texttt{syst : regexp vect vect -> regexp vect -> regexp vect}
+qui prend en argument la matrice des $A_{i,j}$ et le vecteur des $B_i$, et résout
+le système.
+
+\paragraph{Question.5} Comment la fonction précédente permet-elle de calculer 
+le langage reconnu par un automate ?
+
+\end{document}

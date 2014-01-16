@@ -1,0 +1,130 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[latin1]{inputenc}
+\usepackage[francais]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\begin{document}
+
+\paragraph{Déjà fait}
+
+Soit $(x_n )_{n \geqslant 1} $ la suite définie par
+$$x_1  > 0\text{ et }\forall n \in \mathbb{N}^\star  \text{, }x_{n + 1}  = x_n
++ n / {x_n }$$
+a) Calculer avec Maple, les 10 premiers termes de la suite pour différentes
+valeurs de $x_1 $. Commenter.\\
+b) Minorer $x_n $. Si $(y_n )_{n \geqslant 1} $ vérifie la même relation de
+récurrence, étudier $x_n  - y_n $.\\
+En déduire le comportement asymptotique de $(x_n )$.
+
+\paragraph{Numérique}
+a) Subdiviser $\mathbb{R}^ +  $ en intervalles contigus disjoints, chacun
+d'entre eux contenant une unique racine de l'équation $(E):\tan x\textrm{th} x =
+1$.\\
+b) On range toutes les racines positives de $(E)$ dans une suite strictement
+croissante $(x_n )_{n \geqslant 0} $.\\
+Evaluer numériquement les quatre premiers termes.\\
+c) Donner un développement asymptotique de $x_n $.
+
+\paragraph{Algèbre générale et linéaire}
+Soit $G$ le sous-groupe de $\textrm{GL} _2 (\mathbb{R})$ engendré par les deux
+matrices $S$ et $T$ suivantes~:
+$$S = \left( {
+\begin{array}{cc}
+ { - 1} & 0  \\
+ 0 & 1  \\
+\end{array}
+} \right)\text{, }T = \frac{1}{{\sqrt 2 }}\left( {
+\begin{array}{cc}
+ { - 1} & 1  \\
+ 1 & 1  \\
+\end{array}
+} \right)$$
+Rappelons que c'est le plus petit sous-groupe de $\textrm{GL} _2 (\mathbb{R})$
+contenant $S$ et $T$.\\
+a) Avec le logiciel de calcul formel, créer les matrices $S,T$. Expliciter les
+éléments du groupe $\left\langle R \right\rangle $ engendré par la matrice $R =
+ST$ et préciser le cardinal de ce sous-groupe de $G$.\\
+Quelles sont les matrices $SR$ et $R^7 S$~?\\
+b) Montrer que tout élément de $G$ est soit une puissance $R^k $ de $R$, soit un
+produit $R^k S$. Préciser le cardinal $n$ de $G$.\\
+Dresser la liste de tous les éléments de $G$ et déterminer la nature géométrique
+des endomorphismes canoniquement associés dans l'espace euclidien $\mathbb{R}^2
+$.\\
+c) La transformation $\phi _S :g \mapsto S.g$ définit une permutation de
+l'ensemble $G$.\\
+A l'aide du logiciel de calcul formel, dresser la séquence des éléments de $G$
+et de leurs images par $\phi _S $.\\
+Quelle est la signature de la permutation de $G$ (qu'on peut identifier à
+l'ensemble $\left\{ {1,2, \ldots ,n} \right\}$) ainsi définie~?\\
+
+
+\paragraph{Calcul algèbrique}
+Montrer que
+$$\left( {\frac{2}{3} + \frac{{41}}{{81}}\sqrt {\frac{5}{3}} } \right)^{1 / 3}
++ \left( {\frac{2}{3} - \frac{{41}}{{81}}\sqrt {\frac{5}{3}} } \right)^{1 / 3}
+$$
+est un rationnel. On conseille d'effectuer les calculs par ordinateur.
+
+\paragraph{Factorisation d'applications linéaires}
+Soient $n,p$ et $q$ trois naturels non nuls et deux applications linéaires $u
+\in {\mathcal{L}}(\mathbb{R}^p ,\mathbb{R}^q )$ et $v \in
+{\mathcal{L}}(\mathbb{R}^p ,\mathbb{R}^n )$.\\
+a) Démontrer qu'il existe une application linéaire $w \in
+{\mathcal{L}}(\mathbb{R}^n ,\mathbb{R}^q )$ telle que $u = w \circ v$ si, et
+seulement si, on a l'inclusion des noyaux
+$$\ker (v) \subset \ker (u)$$
+Dans ce cas, déterminer toutes les applications $w$ qui conviennent.\\
+b) Pour résoudre cette question, on utilisera un logiciel de calcul formel.\\
+Soient $A$ et $B$ les matrices de ${\mathcal{M}}_3 (\mathbb{R})$ suivantes~:
+$$A = \left( {
+\begin{array}{ccc}
+ { - 2} & 1 & 1  \\
+ 8 & 1 & { - 5}  \\
+ 4 & 3 & { - 3}  \\
+\end{array}
+} \right)\text{ et }B = \left( {
+\begin{array}{ccc}
+ 1 & 2 & { - 1}  \\
+ 2 & { - 1} & { - 1}  \\
+ { - 5} & 0 & 3  \\
+\end{array}
+} \right)$$
+Existe-t-il une matrice $C \in {\mathcal{M}}_3 (\mathbb{R})$ telle que $A =
+CB$~?\\
+Déterminer toutes les matrices $C$ solutions.\\
+c) Pour la matrice $B$ donnée dans la question précédente, caractériser par
+leurs colonnes les matrices $A \in {\mathcal{M}}_3 (\mathbb{R})$ pour lesquelles
+il existe $C \in {\mathcal{M}}_3 (\mathbb{R})$ telle que $A = CB$.\\
+Déterminer dans ce cas l'ensemble des solutions $C$.\\
+d) Soient trois applications linéaires $u \in {\mathcal{L}}(\mathbb{R}^p
+,\mathbb{R}^q )$ et $v_1 ,v_2  \in {\mathcal{L}}(\mathbb{R}^p ,\mathbb{R}^n )$.
+Démontrer qu'il existe deux applications linéaires $w_1 ,w_2  \in
+{\mathcal{L}}(\mathbb{R}^n ,\mathbb{R}^q )$ telles que $u = w_1  \circ v_1  +
+w_2  \circ v_2 $ si, et seulement si,
+$$\ker v_1  \cap \ker v_2  \subset \ker u$$
+\paragraph{Endomorphismes orthogonaux}
+Soient $f$ et $g$ deux endomorphismes l'espace euclidien de $\mathbb{R}^3 $
+canoniquement représentés par
+$$A = \left( {
+\begin{array}{ccc}
+ 1 & 2 & 0  \\
+ { - 4} & 3 & 4  \\
+ 2 & 2 & { - 1}  \\
+\end{array}
+} \right)\text{ et }B = \left( {
+\begin{array}{ccc}
+ 0 & { - 1} & 2  \\
+ 0 & { - 1} & 0  \\
+ { - 1} & 1 & { - 3}  \\
+\end{array}
+} \right)$$
+a) Trouver les droites vectorielles stables par $f$.\\
+b) Soit $P$ un plan de $\mathbb{R}^3 $ de vecteur normal $\vec{n}$. Montrer que
+$P$ est stable par $f$ si, et seulement si, $\textrm{Vect} (\vec{n})$ est stable
+par $f^\star  $.\\
+En déduire les plans stables par $f$.\\
+c) Donner les droites et les plans stables par $g$.
+
+
+\end{document}

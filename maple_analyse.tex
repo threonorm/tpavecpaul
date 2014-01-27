@@ -1,0 +1,215 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\setmainfont[Ligatures={Historic},Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{TD1. Remise en route : Des petites choses diverses.}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr en cas de début d'embrayon de question : N'HÉSITEZ PAS.}}
+\maketitle{}
+
+\section{Guide d'aide à la résolution (Rappels, 10mn de lecture)}
+
+Vous avez peut-être (j'espère!) déjà entendu la chanson de cette première partie, mais allons-y
+
+La résolution d'un problème à l'aide d'un outils tel que Maple est relativement méthodique, et la difficulté est pas toujours là 
+où il y a une difficulté mathématique, bien au contraire.
+
+Grossièrement la méthode d'attaque est :
+\begin{enumerate}
+\item Comprendre mathématiquement le problème
+\item Définir les variables, et les remplir avec les données "formatées" correctement
+\item Calculer la réponse
+\item Afficher la réponse
+\end{enumerate}
+
+Il faut prendre conscience que la plupart du temps, l'étape 3 sera souvent la plus simple réduite à une ou deux instructions! Pas d'inquiétude pour l'étape 1, elle sera de manière générale plus simple que vos exercices en maths.
+
+Autre point important à se souvenir, Maple sait faire deux choses :
+\begin{itemize}
+\item Numériques
+\item Formels ou symboliques
+\end{itemize}
+
+\paragraph{Dialogue intérieur:} "Est-ce que je sais bien ce que c'est? Est-ce que j'ai des exemples? Qu'est-ce qui est le plus facile des deux? Et est-ce que j'ai ordres de grandeurs de problèmes difficiles numériques et formels."
+
+ Il est de bonne pratique de penser à aller voir dans l'aide Maple en cas de problèmes, ou par curiosité. On pourra tester sur les exemples donnés dans l'aide, ne pas hésiter à trifouiller les options passées en argument : vous ne risquez rien, au pire devoir relancer le noyau Maple parce que vôtre environnement est pollué.
+
+%\subsection{Graphique}
+%Rien de bien sorcier, deux commandes essentiellement, mais qui couvrent une immense partie de l'étape 4 :
+% \begin{itemize}
+% \item \emph{plot}
+% \item \emph{plot3d}
+% \item \emph{implicitplot}
+% \end{itemize}
+% 
+%%\subsection{Résolution d'équations}
+%%Formelles
+%%Numérique
+%%Différentielles
+%% 
+%\subsubsection{Équations différentielles et aux dérivées partielles}
+%Les problèmes sur les équations différentielles ne sont pas toujours solubles formellement même pour le logiciel. Mais 
+%on ne veut pas toujours non-plus une solution close analytique jolie au problème! On peut simplement vouloir une valeur à un instant donné de la solution, où une valeur de la dérivée, ou que-sais-je encore. A vous d'identifier ce dont vous avez besoin.
+%
+%\begin{itemize}
+%\item dsolve
+%\item nsolve
+%\end{itemize}
+\begin{framed}
+\emph{Bug du jour:} Le domaine d'étude! Par défaut Maple cherche les solutions aux équations dans des grands domaines, et parfois il aura beaucoup d'imagination pour chercher (et pas forcément trouver) des solutions dans des espaces dont vous ignorez peut-être même l'existence, et où il sera bien évidemment très difficile de chercher la solution (histoire de vous faire bien perdre du temps). Donc on oublie pas de préciser le domaine de travail en cas de problèmes! Ceci est plus spécifiquement vrai pour les équations différentielles.
+\end{framed}
+%
+%\subsection{Suites et séries numériques}
+%
+%
+%
+%\subsection{Analyse fonctionnelle}
+%Classiquement de la décomposition en série de Fourier, de la manipulation de séries entières etc... 
+
+%
+%\subsection{Maple comme langage de programmation : une partie du strict minimum}
+%
+%Les boucles for
+%
+%Les boucles while
+%
+%La structure conditionnelle if
+%%
+%%\paragraph{Exercice de manipulation : matrice tridiagonale et équations différentielles.}
+%%\paragraph{Lokta-Volterra}
+%%\subparagraph{Question bonus : Proposer une expression pour discrétiser le Laplacien}
+
+
+
+\section{Exercices}
+\subsection{DL}
+Soit $f: x \mapsto \frac{cos(x).e^x}{1+x^2} $
+\paragraph{q.1} Calculer le développement limité $h$ de $f$ à l'ordre 5 en 0.
+\paragraph{q.2} Représenter $f$ et $h$ sur $(-1,1)$ 
+\paragraph{q.3} On se place sur l'espace vectoriel des fonctions réelles continues de $(-1,1)$ dans $\mathbb{R}$. 
+Calculer $||h-f||_1$, $||h-f||_2$, $||h-f||_\infty$.
+
+
+%
+%\paragraph{Étude équation différentielle}
+%
+%\paragraph{Analyse fonctionnelle}
+\subsection{Equation différentielle}
+On considère l’équation différentielle suivante :
+$$(1 − x)^3 y'' = y$$
+Soit $y$ l’unique solution de E sur $] −\infty , 1[$ vérifiant $y(0) = 0$ et $y (0) = 1$.
+
+\paragraph{q.1} Résoudre de manière exacte l’équation avec Maple,
+récupérer proprement la solution (celle-ci s’exprime à l’aide de fonctions de
+Bessel) puis en tracer le graphe.
+\paragraph{q.2} Résoudre l’équation de manière numérique puis
+utiliser la fonction odeplot.
+\paragraph{q.3} Représenter la différence des deux solutions. 
+
+\subsection{Approximation de fonctions}
+\paragraph{q.1} Écrire une procédure qui étant donné $n$ points de $[0,1]$ et une fonction f définit sur ce segment, renvoit une fonction g, affine par morceaux, approximation affine "canonique" de f.
+\paragraph{Bonus : difficile} Écrire une procédure qui étant donné f comme précedemment, et $n$ un entier, détermine la meilleure approximation de f par des \emph{fonctions en escaliers} à au plus $n$ marches.
+
+
+
+\subsection{Extremum}
+Trouver le minimum m de la fonction $(x,y)\mapsto xexp(y)$ sur $\mathbb{R}^2$.
+\paragraph{q.1} Via les outils proposés par Maple et vos connaissances mathématiques sur les extremas de fonctions de plusieurs variables.
+\paragraph{q.2} En programmant une descente de gradient. (Expliqué durant la séance si ça vous est inconnu et que le nom ne vous inspire pas directement l'algorithme)
+\paragraph{q.3} Essayer de voir en quoi ces deux méthodes sont très différentes : réfléchir à quelles classes de fonctions vous pouvez appliquer chacun d'eux, quelles sont les précautions d'utilisations?
+\paragraph{q.4}
+Cette fois-ci, minimiser la fonction $blabla$ sur $\{(x,y) | f(x,y)= m \})$
+%
+%\paragraph{Commutant}
+%Trouver le commutant d'une matrice
+
+%
+%\paragraph{Matrice tridiagonale}
+\subsection{Polynomes}
+Soit $E=\mathbb{R}[x]$ $f: E \rightarrow E , P \mapsto P(X+1)-P(X)$.
+\paragraph{q.1} Trouver un polynôme P tel que $f(P)=X^2$
+\paragraph{q.2} En déduire une expression simple de la somme des $n$ premiers entiers.
+
+
+\subsection{Étude de suite}
+Soit $(x_n)_{n\geq1}$ la suite définie par : $x_1 > 0$ et $\forall \in \mathbb{N}^*, x_{n+1} = x_n + e.x_n$.
+\paragraph{q.1} Calculer avec Maple les 10 premières valeurs de la suite pour \emph{différentes} valeurs de $x_1$ . Commenter.
+
+\paragraph{q1.bis} Calculer la somme des 100 premières valeurs, pour $x_1=1$.
+
+\paragraph{q.2} 
+Minorer $x_n$. Si $(y_n)$ vérifie la même relation de récurrence, étudier $x_n-y_n$
+En déduire le comportement asymptotique de $(x_n)$.
+
+
+%Exercice 2
+%Montrer que l’intersection des deux plans d ́finis par x + 2y − 2z = 5 et 5x − 2y − z = 0 est une droite parall`le
+%
+%
+%` la droite d ́finie par x = 2t − 3, y = 3t, z = 4t + 1. Trouver l’ ́quation du plan qui contient ces deux droites.
+%
+%
+%
+%Indication : Utiliser Vector du package LinearAlgebra pour repr ́senter les vecteurs. Le produit vectoriel se dit
+%
+%crossproduct en anglais !
+\section{Problème : l'interpolation}
+\subsection{Lagrange}
+\paragraph{q1.} Écrire une procédure qui étant donné deux listes de réels de même tailles $(x_1,\dots,x_n),(y_1,\dots,y_n)$ renvoi 
+le polynôme de Lagrange d'interpolation.
+\paragraph{q2.} Écrire un programme qui prend en entrée une fonction réelle de $[-1,1]$, un entier $n$, et qui renvoie le polynôme de Lagrange qui interpole la fonction en $n+1$ points équirépartis.
+\paragraph{q3.} Si on note $(P_{n,f})_{n\geq1}$ la suite de polynômes d'interpolation de $f$ dont le terme général vient d'être définit à la question précédente. Proposez des hypothèses pour que la suite converge vers f pour différentes normes, et pour la convergence simple. L'idée est de faire des jolis dessins et d'essayer de se faire un avis, éventuellement faux.
+
+\paragraph{Bonus culturel} Sur quels espaces plus généraux est-ce que l'interpolation de Lagrange fonctionne? Sur quels espaces plus généraux ça marche pas?
+
+\subsection{Runge}
+\paragraph{q4.}Essayer le programme qui précède sur la fonction. $    f:x \mapsto \frac{1}{1+25x^2} $
+\paragraph{q5.}Démontrer qu'effectivement il n'y a pas convergence uniforme, pourquoi la situation est même pire que ça? Prouver que c'est vraiment une catastrophe.
+\paragraph{q6.}Refaire la même démarche en prenant les points d'interpolation aléatoirement uniformément dans $[0,1]$. Que se passe-t-il?
+\subsection{Chebychev}
+\paragraph{q7.} Soit le $T_n$ le $n$-ième polynôme de Tchebychev de deuxième espèce.
+\paragraph{q8.} Extraire les racines qui sont dans $[-1,1]$.
+\paragraph{q9.} Refaire l'interpolation en prenant pour points les racines précédemment extraites. Visualiser le résultat sur quelques fonctions de votre choix.
+
+%
+%\section{3 Problèmes de maths assistés par ordinateur : si vous avez envie!}
+%\subsection{D'alembert-Gauss}
+%\subsection{Phénomène de Runge}
+%\subsection{Approximation par les polynômes de Bernstein}
+%\subsection{Polynômes de Chebychev}
+%\subsection{Un vrai problème d'informatique}
+%
+%\section{Pour aller plus loin : Changer d'espace}
+%\subsection{Résolution de système dans un corps fini}
+\section{Récréation mathématique}
+\paragraph{q.1}Quel est le plus petit entier divisible par tous les entiers de 1 à 10 ?
+\paragraph{q.2}Quel est le plus petit entier divisible par tous les entiers de 1 à 50 ?
+\paragraph{q.3}On note $d_n$ le $n$-ième digit de la constante de Champernowne : $0.123456789101112...$. Calculer $d_1*d_{10}*d_{100}*...*d_{1000000}$
+%\section{Exercice : Deux gouttes d'astrophotographie}
+%\subsection{Bruit numérique}
+%
+%\subsection{Bruit physique}
+%
+%\subsection{Imaginer un algorithme pour aligner deux images} L'utilisateur pourra aider le logiciel, en donnant approximativement l'alignement.
+%
+%\subsection{Un peu plus malin} Pourquoi est-ce que la validation croisée se prête particulièrement bien à ce qu'on veut faire? (\textit{Intuitivement, puis le prouver})
+%
+%\subsection{Régression linéaire}
+%
+%\subsection{Classement simple}
+%
+%\subsection{Pour aller plus loin, de meilleures features}
+
+
+%\section{Programmation dynamique}
+%\section{Algorithmes gloutons}
+\end{document}

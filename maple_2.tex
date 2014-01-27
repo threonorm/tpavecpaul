@@ -1,0 +1,51 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\setmainfont[Ligatures={Historic},Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{TD2. On garde le meilleur pour la fin.}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr en cas de question : N'HÉSITEZ PAS.}}
+\maketitle{}
+
+\section{Exercices}
+Quel est la nature des suites suivantes :
+$$\sum_{n\geq 1} \frac{(2n)!.(3n)!}{n!.(4n)!}$$
+$$\sum_{n\geq 1} \frac{1}{n^{1+1/n}}$$
+
+Quel est le volume de l'ellipsoide délimité par : 
+$$\frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2}=1$$
+
+Prouver que les intégrales suivantes convergent :
+$$\int_{0}^{\infty} cos^2(x)dx$$ 
+
+Soit $\alpha \in (0,1)$, $(x_n)$ une suite vérifiant la récurrence 
+$x_{n+1}= \alpha.x_n+(1-\alpha).x_{n-1}$.
+Montrez que $(x_n)$ converge et calculez sa limite en fonction de
+$x_0,x_1,\alpha$
+
+\section{Problème}
+On dispose d'image noir et blanc du ciel prises par le téléscope spatial
+Hubble.
+\paragraph{Q.1} Vous disposez de plusieurs images des mêmes objets.
+Observez les et proposez une méthode pour supprimer le bruit
+cosmique.(supposé "aléatoire")
+
+\paragraph{Q.2} Ecrire une procédure qui aligne deux images.
+
+\paragraph{Q.3} Ecrire une procédure qui génère une image débruitée en
+partant de deux images bruitées.
+
+\paragraph{Q.4} Vous remarquez que vous disposez de données physiques
+divers : plusieurs longueurs d'ondes. Implémenter un algorithme qui
+génère des images en fausses couleurs.  
+\end{document}
+

@@ -1,0 +1,259 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumerate}
+
+%\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Introduction aux graphes~: des relations binaires aux systèmes de votes}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}\and Paul Melotti}
+\maketitle{}
+
+Les questions marquées d'une étoile sont plus difficiles et pourront être sautées.
+
+\section{Graphe de relation}
+
+Le but du sujet est de vous faire griffoner un nombre maximum de petits
+dessins. Vous êtes donc conviés à sortir une feuille et à réfléchir avec
+ce nouvel objet qu'est le graphe. 
+Dans ce sujet on va s'intéresser à visualiser graphiquement des
+propriétés de relations. Pour représenter une relation binaire $\mathcal{R}$ sur un ensemble
+$X$, on va construire le graphe suivant~: 
+\begin{itemize}
+\item Les sommets sont les éléments de l'ensemble.
+\item On construit une arête (orientée) $(s,t)$ lorsque $s \mathcal{R} t$.
+\end{itemize}
+On note $\mathcal{G}_{\mathcal{R}}$ ce graphe.
+\paragraph{Question. 1\\}
+On représente une relation binaire sur un ensemble fini $X$ par son graphe.
+On représente en Caml ce graphe par sa
+\textit{matrice d'adjacence}~: c'est une matrice de booléens de taille 
+$|X| \times |X|$, telle que l'indice $s,t$ vaut \texttt{true} ssi 
+$s\mathcal{R} t$. On notera \texttt{graphe} son type.
+
+Dessinez le graphe et écrivez la matrice d'adjacence pour les relations 
+suivantes~:
+\begin{itemize}
+\item divisibilité entière sur l'ensemble $X=\{1,2,\dots,6\}$~;
+\item inclusion ensembliste sur les parties de $\{\mathrm{riri};\mathrm{fifi};
+\mathrm{loulou}\}$.
+\end{itemize}
+
+\paragraph{Question. 2\\}
+Écrire des fonctions~:
+\begin{enumerate}[a)]
+\item \texttt{complet: int -> graphe} qui étant donné le cardinal $n$ de $X$
+renvoie le graphe de la \textit{relation complète} sur $X$, notée $\mathcal{C}$,
+définie par~: $\forall x, y, \ x \mathcal{C} y$.
+\item \texttt{diag: int -> graphe} qui étant donné le cardinal $n$ de $X$
+renvoie le graphe de la \textit{relation diagonale} sur $X$, notée $\Delta$, 
+définie par~: $x \Delta y \ \mathrm{ssi} \ x=y$.
+\item \texttt{inter: graphe -> graphe -> graphe} qui étant donné
+deux graphes $\mathcal{G}$ et $\mathcal{G'}$ ayant les mêmes sommets renvoie leur 
+\textit{intersection}, c'est-à-dire le graphe dont les arêtes sont celles qui appartiennent
+à la fois à $\mathcal{G}$ et à $\mathcal{G'}$.
+\item \texttt{union: graphe -> graphe -> graphe} qui étant donné
+deux graphes $\mathcal{G}$ et $\mathcal{G'}$ ayant les mêmes sommets renvoie leur 
+\textit{union}, c'est-à-dire le graphe dont les arêtes sont celles qui appartiennent à
+$\mathcal{G}$ ou à $\mathcal{G'}$.
+\item \texttt{inclus: graphe -> graphe -> bool} qui étant donné
+deux graphes $\mathcal{G}$ et $\mathcal{G'}$ ayant les mêmes sommets dit si 
+$\mathcal{G} \subset \mathcal{G'}$, c'est-à-dire si toute arête de $\mathcal{G}$
+est arête de $\mathcal{G'}$.
+\item \texttt{recip: graphe -> graphe} qui étant donné un graphe 
+$\mathcal{G}$ renvoie sa \textit{réciproque}, c'est-à-dire le graphe qui contient l'arête 
+$(s,t)$ ssi $\mathcal{G}$ contient l'arête $(t,s)$.
+\item \texttt{compose: graphe -> graphe -> graphe} qui étant donné 
+deux graphes $\mathcal{G}$ et $\mathcal{G'}$ ayant les mêmes sommets renvoie leur 
+\textit{composée}, c'est-à-dire le graphe qui contient l'arête $(s,t)$ ssi il existe 
+$u$ tel que $(s,u)\in \mathcal{G}$ et $(u,t) \in \mathcal{G'}$.
+\end{enumerate}
+
+\paragraph{Question. 3\\}
+Décrire en termes d'union, d'intersection et d'inclusion de graphes les 
+propriétés suivantes sur la relation~:
+\begin{itemize}
+\item Réflexive ($\forall x, \ x\mathcal{R}x$)
+\item Symétrique ($\forall x,y, \ x\mathcal{R}y \implies y\mathcal{R}x$)
+\item Transitive ($\forall x,y,z, \ x\mathcal{R}y \ \mathrm{et} \ y\mathcal{R}z \implies x\mathcal{R}z$)
+\item Antisymétrique ($\forall x,y, \ x\mathcal{R}y \ \mathrm{et} \ y\mathcal{R}x \implies x=y$)
+\item Totale ($\forall x,y, \ x\mathcal{R}y \ \mathrm{ou} \ y\mathcal{R}x$)
+\end{itemize}  
+Écrire des fonctions qui étant donné le graphe de la relation, testent ces 
+différentes propriétés.
+
+\paragraph{Question. 4\\}
+\begin{enumerate}[a)]
+\item Étant donné une relation $\mathcal{R}$ on appelle la clôture refléxive
+la plus petite relation réflexive qui contient $\mathcal{R}$. Écrire une 
+fonction qui étant donné le graphe d'une relation renvoie le graphe de sa 
+clôture réflexive.
+\item Même question pour ``symétrique''.
+\item (*) Même question pour ``transitive''.
+\end{enumerate}
+
+\paragraph{Question. 5\\}
+On suppose dans cette question que $\mathcal{R}$ est une relation d'équivalence.
+Comment se manifeste une classe
+d'équivalence dans $\mathcal{G}_{\mathcal{R}}$~? Écrire une fonction qui étant 
+donné le graphe d'une relation d'équivalence, renvoie l'ensemble des classes 
+d'équivalence (au choix comme une liste de listes ou comme un tableau de listes).
+
+\paragraph{Question. 6\\}
+(*) À quoi ressemble un ordre total~? On appelle linéarisation d'un ordre
+partiel, un ordre total qui contient cet ordre partiel, au sens de l'inclusion
+des graphes. Écrire une
+fonction qui linéarise un ordre partiel.
+ 
+\section{Paradoxe de Condorcet}
+On considère le système de vote suivant~: 3 candidats,
+60 votants, et on demande à chaque votant de donner une liste ordonnée de ses 
+préférences.
+\paragraph{Question. 1\\}
+Considérons la situation         
+\begin{itemize}
+\item 23 votants préfèrent\,: A > B > C
+\item 17 votants préfèrent\,: B > C > A
+\item 2 votants préfèrent\,: B > A > C
+\item 10 votants préfèrent\,: C > A > B
+\item 8 votants préfèrent\,: C > B > A
+\end{itemize}
+Construire le graphe de la relation suivante~: on considère que X est moins 
+bien que Y ($X<Y$) si il y a une majorité de gens qui pensent que X 
+est moins bien que Y.
+\paragraph{Question. 2\\}
+La relation obtenue est-t-elle~:
+\begin{itemize}
+\item avec un élément maximum~?
+\item un ordre partiel~?
+\item transitive~?
+\end{itemize}
+\paragraph{Question. 3\\}
+Proposer une manière de résoudre le paradoxe de Condorcet. Qui proposez-vous 
+d'élire~?
+
+\section{Une solution~: le scrutin par rangement des paires}
+On souhaite appliquer l'idée de vote de Condorcet dans le cas général.
+Comme précédemment, on construit le graphe de la relation ``une majorité de 
+personnes pense que $A<B$''. On suppose que 
+le nombre d'électeurs est impair, de manière à toujours avoir l'arête 
+$(A,B)$ ou bien l'arête $(B,A)$.
+
+Le problème, on l'a vu, est que ce graphe peut contenir des cycles (dans un 
+graphe, un cycle est une suite $c_0,... c_n$ de sommets tels que $(c_0,c_1),...,
+(c_{n-1},c_n), (c_n,c_0)$ sont des arêtes du graphe). Pour éviter ce problème, 
+on va pondérer l'arête $(A,B)$ par le nombre de personnes qui pensent que $A<B$.
+Au lieu d'ajouter toutes les arêtes d'un coup, on les 
+ajoute par ordre de poids décroissant, en n'ajoutant pas les 
+arêtes qui créent des cycles. À la fin, on obtient un graphe sans cycle 
+(\textit{acyclique}), et on élit l'élément maximum de ce graphe 
+(on va montrer que cet élément existe et est unique).
+
+\paragraph{Question. 1\\}
+Appliquer cette méthode sur l'exemple précédent.
+
+\paragraph{Question. 2\\}
+Montrer que dans un graphe fini acyclique, il existe un élément 
+maximal (un élément $a$ tel qu'il n'existe pas d'arête $(a,b)$ dans le graphe).
+
+\paragraph{Question. 3\\}
+Montrer qu'à la fin de la méthode par rangement des paires, il existe un unique 
+élément maximal.
+
+\paragraph{Question. 4\\}
+(*) Écrire une fonction \texttt{ajoutable: int -> int -> graphe -> bool} qui étant 
+donné deux entiers $i,j$ et un graphe $\mathcal{G}$ dont on suppose qu'il ne 
+contient pas l'arête $(i,j)$, dit si l'ajout de l'arête $(i,j)$ à $\mathcal{G}$ 
+va créer un cycle. La fonction renverra \texttt{false} dans ce cas.
+
+Pour répondre à cette question on pourra au préalable réfléchir à la question 
+1-4c) sur la clôture transitive, si ce n'est pas déjà fait.
+
+\paragraph{Question. 5\\}
+On suppose qu'un fonctionnaire a déjà fabriqué le tableau
+des préférences, qui contient à l'indice $(A,B)$ le nombre de personnes qui 
+pensent que $A<B$. Écrire une fonction \texttt{elit: int vect vect -> int} qui, 
+étant donné le tableau des préférences, détermine le vainqueur pour la méthode 
+par rangement des paires.
+
+\section{Morphisme de graphes}
+On appelle un morphisme de graphe, une application d'un graphe dans un
+autre qui préserve l'adjacence.
+
+\paragraph{Question. 1\\} Ecrire une fonction qui prend deux graphes,
+une fonction d'un graphe dans l'autre, et détermine si cette fonction est
+un morphisme de graphe. 
+
+\paragraph{Question. 2\\}
+Qu'est-ce qu'un morphisme de graphes pour le monde des relations d'ordres~?
+
+\paragraph{Facultatif culturel\,:\\}
+(*) On dit que deux graphes sont isomorphes s'il 
+existe entre eux un morphisme de graphes bijectif dont l'inverse est un 
+morphisme de graphes.
+
+Écrire une fonction qui détermine si deux graphes
+sont isomorphes. Quelle est la complexité de votre algorithme\,?
+
+\section{Coloriage de graphes}
+
+Un $k$-coloriage d'un graphe $\mathcal{G}$ est un coloriage des sommets du 
+graphe $\mathcal{G}$ à
+l'aide de $k$ couleurs, tel que deux sommets adjacents ne sont jamais de la
+même couleur.
+
+\paragraph{Question. 1\\}
+Montrer que tout arbre est 2-coloriable.
+
+\paragraph{Question. 2\\}Le degré d'un sommet est le nombre de voisins
+de ce sommet, le degré d'un graphe et le maximum des degrés de ses
+sommets.
+
+On va encoder un coloriage par un tableau d'entier, de la taille du
+nombre de sommets du graphe. Montrer que tout graphe de degré borné par
+$k$, est $k+1$-coloriable. Écrire une fonction qui renvoie un tel coloriage. 
+
+\paragraph{Question. 3\\}
+On définit le nombre chromatique du graphe $\mathcal{G}$ comme le plus petit $k$ tel que
+$\mathcal{G}$ soit $k$-coloriable. Si c'est le graphe d'une relation d'equivalence, à quoi
+correspond ce $k$~?
+
+\section{Une dernière notion~: Circuits hamiltoniens et eulériens}
+Ici on va considérer des graphes non-orientés, connexes.
+On appelle un circuit hamiltonien (resp. eulérien) un chemin dans un graphe qui passe une
+et une seule fois par chaque sommet (resp. arête), et dont le départ et l'arrivée
+sont confondus. Contrairement à votre
+intuition légitime, on pense
+que l'un des deux problèmes est beaucoup plus difficile que l'autre. 
+
+\paragraph{Question. 1\\}
+(*) Écrire une fonction \texttt{isHamiltonian} qui
+dit si un graphe admet un circuit hamiltonien, et si oui renvoie un tel circuit.
+Quelle est la complexité de votre algorithme~? \emph{Culture~: C'est le
+bien connu problème du voyageur de commerce.}
+
+\paragraph{Question. 2\\}
+On appelle code de Gray une énumération des entiers de $[0,2^n-1]$ par
+des mots binaires de $n$ bits, telle que deux entiers successifs ont des
+représentants qui ne diffèrent que d'un bit. En utilisant la question
+précèdente sur un graphe bien choisi, montrez l'existence d'un tel code
+de Gray pour $n=4$. Ceci était une $\epsilon-$introduction à la théorie
+des codes correcteurs d'erreurs. C'est \emph{*intéressant*}. Certains
+codes de Gray sont simples à calculer~: on pourra prendre 2mn pour se
+documenter.
+
+\paragraph{Question. 3\\} Prouver qu'un graphe connexe non orienté possède un circuit
+eulérien si et seulement si chaque sommet est de degré pair. 
+Écrire une fonction Caml \texttt{isEulerian} qui décide si un graphe possède un
+circuit eulérien. 
+
+\end{document}

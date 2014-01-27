@@ -1,0 +1,11 @@
+TP ginoux:
+Je pense que l'exercice 2 est effectivement très bien, pour leur faire
+bien comprendre ce que c'est le filtrage, et que ce n'est pas une
+structure conditionnelle basique. Bonne extraction monsieur.
+
+TP thomas :
+Intro : rappeler les def de littéraux, clauses,...
+Partie 4 : définir c[x/b] (b est bien un booléen et pas une formule ?)
+Remarque générale : ce TP est cool, mais j'ai un peu peur de le poser en 
+premier TP car s'ils ont pas bien compris le principe des types et des 
+structures de données arborescentes ils vont en chier.

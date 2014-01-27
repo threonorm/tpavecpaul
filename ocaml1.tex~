@@ -1,0 +1,100 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{Caml-TD1 : Rappels de logique, satisfaisabilité.}
+\author{Thomas Bourgeat\footnote{Vous pouvez bien entendu me contacter par mail thomas.bourgeat@ens.fr, même en cas de début de question : N'HÉSITEZ PAS.}}
+\maketitle{}
+
+\section{Introduction}
+Un problème bien connu de l'informatique est le problème de savoir si une formule logique en CNF (Forme normale conjonctive) est satisfiable. Autrement dit, s'il existe une distribution de valeur pour les variables qui rend la formule vraie. Par exemple si on prends $F=(x_1\lor \neg x_2)\land(x_1\lor x_3)$, la formule F est vraie lorsque l'on choisit $x_1=1,x_2=0$. On remarque qu'il peut y avoir éventuellement plusieurs valuations qui satisfont la formule. A contrario parfois aucune valuation ne rend la formule vraie. Par exemple : $F=x_1\land (\neg x_1)$. 
+
+Il y a une foule de problèmes et de littérature qui tournent autour de la satisfaisabilité, desquels l'étudiant curieux pourra wikipédier puis approfondir. Quelques mots clefs : 3-SAT, MAX SAT, MAX-3-EQ-LIN.
+
+Pour ce TD, l'objectif est de représenter sur la machine les formules logique de manière à ce que leur manipulation soit pratique. Ensuite nous implémenterons des stratégies naïves de résolution du problème, puis nous traiterons un cas particulier de formule logique. Le but du TD est de vous montrer que même pour les problèmes difficiles certaines instances du problème peuvent être résolues en temps polynomial. Si une question vous semble difficile, essayez de traiter des exemples sur un papier, et ayez une idée claire de votre stratégie de résolution avant de commencer à l'implémenter sur la machine : vous gagnerez du temps.
+
+\section{Représentation de formules logiques et manipulations}
+
+\paragraph{1.} Proposer un type pour : les variables (appelé \texttt{var}), les littéraux (appelé \texttt{litt}), les clauses (appelé \texttt{clause}), les formules (appelé \texttt{formule}), les formule en forme normale conjonctive (appelé \texttt{CNF}), ainsi que pour les valuations (appelé \texttt{valua})
+
+\paragraph{2.} Écrire une fonction qui transforme un objet de type \texttt{CNF} en un objet de type \texttt{formule} de manière canonique. 
+
+\paragraph{3.} Écrire une fonction qui teste si deux formules (type \texttt{formule}) sont équivalentes. Un algorithme naïf sera suffisant.
+
+\paragraph{4.} Écrire une fonction qui étant donné une formule en CNF et une variable, renvoie la liste des clauses qui font intervenir cette variable. 
+\paragraph{5.} Écrire une fonction qui étant donné une formule en CNF et une valuation, renvoie la liste des clauses non satisfaites.
+
+\paragraph{6.(facultative, conseillée si vous avez fait les questions précèdentes en moins de 30mn)} Écrire une fonction cnf de type $\texttt{formule} \rightarrow \texttt{CNF}$\footnote{Attention à ne pas confondre le type \texttt{CNF} et la fonction cnf et me demander le laïus sur les espaces de nom si je ne le fais pas.}  qui met une formule sous forme normale conjonctive.
+
+\section{Algorithme de résolution, intuition sur la structure des instances}
+
+\paragraph{1.} Écrire une fonction qui détermine naïvement si une formule est satisfiable, si elle l'est renvoie une valuation témoin (on s'arrêtera des qu'on a trouvé une témoin). Il va falloir négocier avec le système de type de Caml pour pouvoir faire ça : soyez créatif! Donner sa complexité. Pourquoi une réponse précise à cette question est difficile ? 
+
+\paragraph{2.} Écrire une fonction qui génère des formules de manière randomisée en CNF avec des contraintes choisies : m variables, p littéraux par clauses, q clauses.(On pourra bien sur utiliser le module Random comme source d'aléa)
+
+\paragraph{3.} Écrire une fonction qui prends en entrée deux entiers n et m et qui renvoie une formule en CNF qui possède m variables et dont n valuations parmi les $2^m$ satisfont la formule.
+ 
+\paragraph{Question morale} Faites vous une intuition de comment les paramètres dont on a discuté précédemment pourraient influer sur la difficulté d'une instance du problème.
+
+
+\section{Le cas général moins naïvement}
+Dans cette partie nous allons voir un algorithme un peu plus évolué : une version primitive de l'algorithme DPLL. Moralement, c'est un backtracking. Le principe est simple : on prends une variable, on essaie de lui attribuer la valeur 1, et on regarde si la formule qui a subit la substitution est satisfiable. Sinon on lui attribue la valeur 0. Puis on recommence avec une autre variable. On s'arrête lorsqu'une clause est fausse (non-satisfiable), ou qu'il n'y a plus de clauses (satisfiable, avec les valeurs choisies par l'algorithme jusqu'alors et n'importe quelles valeurs pour les variables non-traitées par l'algorithme).
+
+\paragraph{1.} Écrire la définition par induction des formules et des clauses lorsqu'il y a une substitution.
+
+\paragraph{2.} Programmer une fonction \texttt{reduceclause c i b}, qui renvoie la clause $c[x_i/b]$.
+
+\paragraph{3.} Programmer une fonction \texttt{reduceformule f i b}, qui renvoie la formule $f[x_i/b]$.
+
+\paragraph{4.} Programmer une fonction \texttt{stop f} testant si une condition d'arrêt est vérifiée.
+
+\paragraph{5.} Programmer l'algorithme DPLL. On pourra faire ça récursivement : \texttt{dpll f i v} renvoie vrai si la formule $$f[x_1/v(0)][x_2/v(1)]\dots[x_i/v(i-1)]$$ est satisfiable, faux sinon. Dans le cas où la formule est satisfiable, v devra contenir une valuation satisfaisant f. Conclure.
+
+\paragraph{Remarque culturelle : à implémenter pour les très rapides.} Pour accélérer l'algorithme on peut rajouter les deux règles suivantes pour élaguer l'arbre des possibilités :
+\begin{itemize}
+\item lorsqu'une clause ne contient qu'une variable, on doit alors fixer la valeur de cette variable, puis supprimer la clause.
+\item lorsqu'une variable est pure : qu'elle apparaît dans exactement une clause, on peut supprimer la clause et ajuster la variable directement.
+\end{itemize}
+Ce petit complément est simplement là pour vous faire intuiter que le SAT-solving est très heuristique : on cherche des conditions de plus en plus compliquées pour éliminer des branches de l'arbre de backtrack. Mais, principe de base de l'économie, il faut que le cout de revient de calcul des heuristiques loufoques qu'on rajoute soit plus faible que le temps de calcul économisé en éliminant des branches de l'arbre de backtrack.
+
+\section{Pour aller plus loin : Cas particulier traité par Message Passing.}
+
+\paragraph{Présentation du message passing} Pour toute formule F en CNF, on va associer un graphe $G_F$. Ce graphe possède deux types de sommets : disons des sommets ronds : les variables et des sommets carrés : contrôleurs de parités qui correspondent au différentes clauses. Les arêtes sont de deux types : positives et négatives (on pourra représenter en plein ou pointillé) et relient exclusivement des sommets ronds à des sommets carrés. Sur papier représentez les graphes associés à quelques formules de votre choix. Ce graphe est simplement \emph{une autre représentation des formules}, mais on comprends bien que ce graphe caractérise fortement la difficulté du problème, suivant le nombre de composantes connexes, leurs tailles, la présence de cycles etc... 
+
+\paragraph{1.} Proposez un type pour cette représentation par graphes.
+
+\paragraph{2.} Programmez une fonction qui prend en entrée une formule en CNF et renvoie sa représentation par graphe que l'on vient de présenter. Ensuite programmez la fonction réciproque. 
+
+\paragraph{3.} En déduire une fonction qui génère une formule en CNF dont le graphe associé est un arbre.
+
+\paragraph{4.} Implantez la stratégie par transfert de messages suivante : 
+\begin{itemize}
+\item Partez d'une valuation quelquonque
+\item Regardez quelles clauses sont contredites et essayez de voir si en switchant une variable on peut diminuer le nombre de clauses contredites. Switcher quand c'est favorable.
+\item Reprendre l'étape précèdente un nombre suffisant de fois. 
+\end{itemize}
+Vous trouverez dans l'ébauche de biblio un liens vers une preuve de correction dans le cas d'une CNF dont la représentation est un arbre.
+
+\section{Applications : mini-projet de TD1}
+
+Vous choisirez au choix de faire un solveur de sudoku ou un solveur du problème des n-reines basé sur le SAT-solver réalisé précédemment. Le second est un peu plus simple. Ne paniquez pas, c'est plus simple qu'il n'y parait, tout le monde en est capable. La difficulté est simplement de trouver quelles sont les bonnes variables à considérer et exprimer les contraintes en ces variables. En cas de difficulté n'hésitez pas à me contacter.
+
+
+
+\section{Références}
+Une bibliographie informelle pour aller plus loin : 
+pour voir un bel article qui présente en OCaml ET en français une stratégie de SAT-solving, je vous conseille d'aller voir : \emph{Sat-micro : petit mais costaud} disponible à \url{https://www.lri.fr/~conchon/publis/conchon-jfla08.ps}.
+Si vous êtes intéressés par les études plus théoriques vous pourrez par exemple lire \emph{Constraint satifaction by survey propagation} qui a inspiré ce TP et qui contient des preuves de complexité et de correction pour le message passing, disponible à \url{http://arxiv.org/pdf/cond-mat/0212451v3}.
+
+\end{document}

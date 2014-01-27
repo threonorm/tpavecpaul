@@ -1,0 +1,66 @@
+
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\begin{document}
+\title{Quelques exos du TD 1 Ginoux}
+\maketitle{}
+
+\section{Que diable se passe-t-il dans cette mémoire ?}
+Pour une chaîne de caractères $u$ on note $\tilde{u}$ sa chaîne miroir (par exemple si $u = "abcd"$, $\tilde{u} = "dcba"$).
+
+\paragraph{1.} Écrire la fonction qui à $u$ associe $\tilde{u}$.
+
+\paragraph{2.} Écrire la fonction qui teste si un mot est un palindrome, i.e. si $u = \tilde{u}$.
+
+\paragraph{3.} Que penser de la solution suivante~?
+\begin{verbatim}let miroir u = let n=string_length u in
+    for i=0 to n/2-1 do
+    let m=u.[i] in u.[i]<-u.[n-1-i] ; u.[n-1-i]<-m
+    done ;
+    u ;;
+    
+let palindrome u = let v = miroir u in u=v ;;    
+\end{verbatim}
+
+\section{Typage}
+On considère la fonction
+\begin{verbatim}let egal x y = match y with
+    | x -> true
+    | _ -> false ;;
+\end{verbatim}
+Quel est son type~? Que renvoie \texttt{egal 1 2}~?
+
+\section{Exceptions}
+Les exceptions sont des instructions qui demandent l'arrêt du programme. Vous en avez déjà rencontré~: ce sont par exemple les erreurs du style ``Invalid\_argument : vect\_item '' que vous obtenez lorsque vous essayez d'accéder à une case inexistante d'un tableau. Le programme s'est arrêté en cours de route pour vous lancer ce signal.
+
+Une exception doit toujours être déclarée au préalable par la commande \texttt{exception <nom>}. Une exception peut aussi être rattachée à un type (par exemple, un entier~: on renvoie l'indice du tableau pour lequel on a eu une erreur,...), dans ce cas, on le précisera dans la déclaration : \texttt{exception <nom> of <type>}.
+
+Pour pouvoir gérer les exceptions, nous devrons commencer le programme par la commande \texttt{try}. À l'intérieur du programme, on déclenchera l'exception par la commande \texttt{raise <nom>}, ou \texttt{raise <nom> <donnée>} si l'exception a un type. L'exception sera alors récupérée par un matching final qui indiquera ce qu'il faut faire. La syntaxe est donc~:
+\begin{verbatim}try <programme> with
+  <exception1> -> <faire ceci>
+  | <exception2> -> <faire cela>
+  | ...
+\end{verbatim}
+
+\emph{Exemple~:} on cherche dans un vecteur \texttt{v} un élément \texttt{x}. La fonction \texttt{cherche} doit renvoyer l'indice d'un élément de \texttt{v} égal à \texttt{x}, ou \texttt{-1} si on n'en trouve pas.
+\begin{verbatim}exception trouve of int;;
+let cherche x v = try
+  for i=0 to (vect_length v)-1 do
+  if v.(i)=x then raise (trouve i)
+  done;
+  -1
+with trouvé k -> k;;
+\end{verbatim}
+
+\emph{Exercice~:} écrire une fonction qui teste si une liste d'entiers est croissante, d'abord en style itératif (i.e. avec des boucles), puis récursif (i.e. avec des fonctions récursives). Le faire sans exceptions, puis avec.
+\end{document}

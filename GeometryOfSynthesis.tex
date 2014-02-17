@@ -1,0 +1,362 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[frenchb]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{stmaryrd}
+\usepackage{wrapfig}
+\usepackage{pgf}
+\usepackage{tikz}
+
+\newcommand\smt[1]{[\![#1]\!]}
+\usepackage{bussproofs}
+
+\usetikzlibrary{arrows,automata}
+
+\usetheme{Warsaw}
+\newtheorem{theo}[theorem]{Théorème}
+\title{Geometry of Synthesis}
+\author[Thomas Bourgeat]{Auteur : D. Ghica}
+\date{Janvier 2013}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Plan}
+  \tableofcontents
+\end{frame}
+
+\section{Un langage pour les circuits}
+
+\begin{frame}{Objectif}
+Basic Syntactic Control of Inference :
+\begin{itemize}
+\item Langage dédié pour la synthèse de circuits
+\item Style fonctionnel
+\item Typé
+\item Dont on sait donner la sémantique de programmes.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Types}
+\begin{itemize}
+\item $\sigma := com | cell | exp$
+\item $\theta := \sigma | \theta * \theta' | \theta \rightarrow theta'$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Description}
+\begin{itemize}
+\item Une sorte de $\lambda$-calcul simplement typé.
+\item constantes :
+\begin{itemize}
+\item $1 :: exp$
+\item $0 :: exp$
+\item $asg :: cell * exp \rightarrow com$
+\item $der :: cell \rightarrow exp$
+\item $seq :: com * com \rightarrow com$
+\item $seq :: com * exp \rightarrow exp$
+\item $op :: exp * exp \rightarrow exp$
+\item $if :: exp * com * com \rightarrow com$
+\item $while :: exp * com \rightarrow com$
+\item $newvar :: (cell \rightarrow com) \rightarrow com$
+\item $newvar :: (cell \rightarrow exp) \rightarrow exp$ 
+\end{itemize}
+\item \emph{Remarque :} Pas de récursion, ni de composition parallèle.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Système de types.}
+\begin{itemize}
+\item \begin{prooftree}
+\AxiomC{}
+\RightLabel{(Id)}
+\UnaryInfC{$x:\theta \vdash x:\theta$}
+  \end{prooftree}
+
+\item \begin{prooftree}
+\AxiomC{$\Gamma \vdash M:\theta$}
+\RightLabel{(Wk)}
+\UnaryInfC{$\Gamma , x:\theta' \vdash M:\theta$}
+\end{prooftree}
+
+\item \begin{prooftree}
+\AxiomC{$\Gamma , x:\theta' \vdash M:\theta $}
+\RightLabel{(Intro$\rightarrow$)}
+\UnaryInfC{$\Gamma \vdash \lambda x.M :\theta' \rightarrow \theta$}
+\end{prooftree}
+
+\item \begin{prooftree}
+\AxiomC{$\Gamma \vdash M : \theta'$}
+\AxiomC{$\Gamma \vdash N : \theta $}
+\RightLabel{(Intro$*$)}
+\BinaryInfC{$\Gamma \vdash (M,N):\theta'*\theta$}
+\end{prooftree}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Partage de ressources.}
+\begin{itemize}
+\item Application de fonctions :
+\begin{prooftree}
+\AxiomC{$\Gamma\vdash F : \theta' \rightarrow \theta$}
+\AxiomC{$\Delta\vdash M : \theta'$}
+\RightLabel{(Elim$\rightarrow$)}
+\BinaryInfC{$\Gamma,\Delta \vdash F M : \theta $}
+\end{prooftree}
+\end{itemize}
+\end{frame}
+
+\section{Et sa sémantique?}
+
+\subsection{Opérationnelle}
+
+\begin{frame}
+\begin{itemize}
+\item Les réductions sont de la forme : $M,s\Downarrow T,s'$
+\begin{itemize}
+\item $s/s'$ sont des états : ils attribuent des valeurs booléennes aux variables libres 
+\item $M$ un terme semi-clos (c'est à dire que les variables libres sont des
+Cell.)
+\item $T$ un terminal (0,1, skip ou une abstraction)
+\end{itemize}
+\pause
+\item \emph{impure :} on a une sorte d'environnement, un peu comme des références.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Comme en $\lambda$-calcul, on a une sorte de $\beta$-réduction, puis des
+règles pour les constantes.
+\item 
+\begin{prooftree}
+\AxiomC{$M, s \Downarrow\lambda x.M',s$}
+\UnaryInfC{$M M'',s\Downarrow M' [M''/x], s$}
+\end{prooftree}
+\item 
+
+\begin{prooftree}
+\AxiomC{$V,s\Downarrow v,s'$}
+\UnaryInfC{$der(V)\Downarrow s'(v), s'$}
+\end{prooftree}
+
+\end{itemize}
+\end{frame}
+
+
+\subsection{Dénotationnelle.}
+
+\begin{frame}{On veut des circuits.}
+\begin{itemize}
+\item Et si la sémantique d'un programme était un circuit.
+\item On veut que:
+\begin{itemize}
+\pause
+\item Le circuit soit correct
+\pause
+\item Il soit relativement conçis/optimisé.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Des circuits particuliers.}
+
+\begin{frame}{Discussion informelle}
+\begin{itemize}
+\item Un circuit c'est :
+\begin{itemize}
+\item Des entrées/sorties : des canaux de communication.
+\item Un comportement, qui lie l'état des sorties en fonction de celui des
+entrées.
+\end{itemize}
+\pause
+\item Un circuit poignée-de-main est 
+\pause
+poli :
+\begin{itemize}
+\pause
+\item Peut recevoir des demandes
+\item Peut emettre des demandes
+\item Réponds aux demandes
+\item Reçois les réponses de ses demandes. 
+\pause
+\end{itemize}
+\item Donc des canaux \emph{Req}, et des canaux \emph{Ack}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Catégorie HC}
+\begin{itemize}
+\item Soit HC la catégorie :
+\begin{itemize}
+\item \emph{Objets :} Sont des ports qui possèdent deux attributs qui ont chacun
+deux formes : Input/Output et Req/Ack. 
+\item \emph{Morphismes :} $f : A \rightarrow B$ sont les circuits dont :  
+\begin{itemize}
+\item Les entrées sont les sorties de A et les entrées de B
+\item Les sorties sont les entrées de A et les sorties de B
+\item Les Req sont les Req de A et de B
+\item Les Ack sont les Ack de A et de B
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Composition dans HC}
+
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.6]{comp.jpg}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Identité}
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.6]{id.jpg}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Le neutre pour la loi est l'ensemble vide de ports.
+\item Le tenseur de deux objets est l'union disjointes des ports (en gardant les
+spécificités). 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Monoidale}
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.3]{mono.jpg}
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}{Cloture dans HC}
+\begin{itemize}
+\item Ben les fonctions de A dans B, c'est des ports avec des labels, et un
+comportement.
+\pause
+\item Donc dans $A\Rightarrow B$, ont mets les ports avec les labels.
+\item $Eval::A1\otimes(A_2\Rightarrow B_1)\rightarrow B_2$ se fait
+naturellement. On mets tous les ports en parallèle, $A_1$ lié avec $A_2$, $B_1$
+avec $B_2$. Voir le dessin au tableau
+\end{itemize}
+\end{frame}
+
+
+\subsection{Encore plus particuliers.}
+\begin{frame}
+\begin{itemize}
+\item On a une catégorie monoidale close
+\pause
+\item On veut un produit en plus.
+\pause
+\begin{theo}
+Si on a une catégorie monoidale close, et que l'on est capable d'en trouver une
+sous-catégorie qui vérifie que l'unité pour le produit monoidale est un objet
+terminal, et que chaque objet a un morphisme diagonal, alors cette
+sous-catégorie est cartésienne.
+\end{theo}
+\pause
+\item Humhum, une catégorie cartésienne close, du $\lambda$-calcul, on va
+pouvoir interpréter!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Circuit SHC}
+\begin{itemize}
+\item Un \emph{circuit poignée-de-main simple} est \pause très poli :
+\pause
+\begin{itemize}
+\item Entrées et sorties alternent
+\item Les Req/Ack sont bien parenthésés. (i.e : on fait pas \texttt{Req1;Req2;Ack1;Ack
+2})
+\item On a pas de Req successifs sur le même port, sans réponse :
+\texttt{Req1;Req1;Ack1;Ack1}
+\pause
+\item (La première requête est faite sur un port initial) 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Et si on considère de tels circuits, on a des circuits diagonaux comme
+suit : 
+\pause
+\item $A \rightarrow A_1*A_2$ donc on a les ports de A dupliqués 3 fois, nommés
+
+$A_i$. Puis se souvenir de i.
+\item Si il y a une sortie sur $A$, produire une sortie aussi sur le port
+correspondant de $A_i$, avec le i mémorisé.
+\end{itemize}
+\end{frame}
+
+\subsection{Modules élémentaires.}
+
+\begin{frame}{Alors, comment on interprète?}
+\begin{itemize}
+\item On a trois objets/types de bases :
+\begin{itemize}
+\item $\smt{com}=\{R\rightarrow(ir),D\rightarrow(oa)\}$
+\item $\smt{exp}=\{Q\rightarrow(ir),T\rightarrow(oa),F\rightarrow(oa)\}$
+\item $\smt{cell}=\{WT\rightarrow(ir),WF\rightarrow(ir),Q\rightarrow(ir),D\rightarrow(oa),T\rightarrow(oa),F\rightarrow(oa)\}$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.6]{const.jpg}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.5]{if.jpg}
+\end{figure}
+
+
+\end{frame}
+\section{Conclusion}
+
+\begin{frame}
+Conclusion :
+\begin{itemize}
+\item Premier article d'une série d'au moins 4
+\pause
+\item Récursivité
+\pause
+\item Concurrence 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Handshake Circuits an Intermediary Between Communicating Processes and
+VLSI - K. Van Berkel
+\item D.Ghica - Geometry of Synthesis
+\end{itemize}
+\end{frame}
+
+\end{document}
+

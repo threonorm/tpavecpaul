@@ -1,0 +1,126 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[francais]{babel}  %Doc fr
+\usepackage{fullpage}
+\usepackage{euler}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumerate}
+
+%\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+
+\begin{document}
+\title{TP9: Labyrinthes}
+\author{Paul Melotti (\texttt{paul.melotti@ens.fr}\footnote{N'HÉSITEZ à 
+m'écrire pour toute question sur l'informatique, les TIPE, les concours... Je 
+reste à votre disposition.})}
+\date{6 et 13 mars 2014}
+\maketitle{}
+
+L'objectif de ce TP est de découvrir comment les notions de parcours en 
+profondeur et en largeur que vous avez vues peuvent être utilisées dans le cas
+des labyrinthes.
+
+Un labyrinthe sera représenté de la façon suivante : c'est une matrice d'entiers,
+qui valent 0 sur les zones dégagées et 1 sur les murs. \textbf{On suppose que tous
+les coefficients du bord de la matrice sont des 1.} Une seule case de la matrice
+contient l'entier 2, c'est la sortie. On a le droit de se déplacer dans les quatre
+directions, mais pas en diagonale. Exemple :
+\begin{verbatim}let laby = [|
+  [|1;1;1;1;1;1;1;1;1|];
+  [|1;0;1;0;0;1;2;1;1|];
+  [|1;0;1;0;1;0;0;0;1|];
+  [|1;0;0;0;0;0;1;0;1|];
+  [|1;1;1;1;1;1;1;1;1|]
+|];;\end{verbatim}
+ 
+\paragraph{Question 1.} Écrire une fonction \texttt{affiche : int vect vect -> unit}
+qui affiche un labyrinthe : on représentera les murs par des \texttt{\#}, les 
+zones dégagées par des espaces vides et la sortie par un \texttt{S}. Exemple :
+\begin{verbatim}affiche laby;;
+#########
+# #  #S##
+# # #   #
+#     # #
+#########\end{verbatim}
+
+\section{Parcours en profondeur}
+On lance un petit lutin dans le labyrinthe à la case $i_0,j_0$ et on le charge
+de trouver la sortie. On lui donne un petit pot de peinture, comme ça il peut 
+marquer les cases déjà rencontrées. Naturellement, notre lutin va effectuer un
+parcours en profondeur :
+\begin{verbatim}PP(case) =
+   SI c'est la sortie, c'est gagné.
+   SI la case n'est pas marquée,
+      marquer la case,
+      pour toutes les cases voisines,
+         PP(voisine).
+\end{verbatim}
+\paragraph{Question 2.} Pourquoi faut-il marquer les cases déjà rencontrées ?
+
+En Caml, on marquera les cases rencontrées en mettant un 3 dans la matrice.
+Comme on ne veut pas modifier notre labyrinthe initial, on a besoin de la 
+fonction suivante :
+\paragraph{Question 3.} Écrire une fonction \texttt{copie\_matrice} qui renvoie
+une copie de la matrice donnée en argument.
+
+\paragraph{Question 4.} Écrire une fonction 
+\texttt{estsoluble : int vect vect -> int -> int -> bool} qui prend en entrée un
+labyrinthe et la case d'où on part et dit si on peut atteindre la sortie, en 
+effectuant un parcours en profondeur.
+\\
+
+On a maintenant un petit lutin qui sait nous dire si on peut sortir du 
+labyrinthe. Le problème, c'est qu'il ne nous dit pas quel chemin il faut 
+prendre. Pour aussi connaître ce chemin, on va écrire sur chaque case visitée
+un chemin du départ à cette case, sous la forme d'une \texttt{(int * int) list}.
+
+\paragraph{Question 5.} Reprendre la fonction de la question 4 pour qu'elle 
+renvoie un \texttt{bool * (int*int) list} : le booléen dit si on peut sortir,
+et la liste nous donne un chemin pour sortir (et ce que vous voulez si on ne 
+peut pas sortir).
+
+\section{Parcours en largeur}
+On voudrait maintenant connaître le plus court chemin de l'entrée à la sortie.
+Pour cela, au lieu de s'enfoncer le plus possible dans les chemins comme avec
+un parcours en profondeur, on va plutôt regarder d'abord les cases qui sont
+à distance 1, puis celles qui sont à distance 2, etc. C'est l'idée du parcours
+en largeur. Pour cela, on va utiliser une file d'attente (structure FIFO) pour
+stocker les cases à explorer (et on a donc besoin d'un lutin plus intelligent).
+
+\paragraph{Question 6.} Écrire rapidement des fonctions de manipulation de files
+d'attente : enfilage, défilage, et test de file vide.
+\\
+
+On utilise la fonction d'exploration suivante : la file d'attente \texttt{f} est
+initialisée à \texttt{[(i0,j0)]} et la case $(i_0, j_0)$ est initialement
+marquée, et on lance le parcours en largeur :
+\begin{verbatim}TANT QUE f non vide,
+   Défiler x de f,
+   Pour tout voisin y de x,
+      SI y non marqué
+         enfiler y,
+         .........,
+         marquer y.
+FIN TANT QUE     
+\end{verbatim}
+La partie laissée en petits points correspond à une certaine action que vous
+devrez trouver vous-même.
+
+\paragraph{Question 7.} Se convaincre que cet algorithme (le parcours en largeur)
+explore bien les cases par distance à l'origine croissante. 
+
+\textit{Conseil :} essayer sur un exemple.
+
+\paragraph{Question 8.} Écrire une fonction \texttt{voisins : int -> int -> int vect vect -> (int * int) list} qui étant donné $i$, $j$ et un labyrinthe renvoie la liste 
+des voisins de la case $(i,j)$ qui ne sont pas marqués et ne sont pas des murs.
+
+\paragraph{Question 9.} Écrire une fonction qui fait comme à la question 5, mais
+cette fois-ci renvoie un chemin de longueur minimale lorsque le labyrinthe est
+résoluble.
+
+\end{document}

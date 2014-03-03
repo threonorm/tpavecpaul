@@ -1,5 +1,5 @@
 \documentclass[10pt,a4paper]{article}
-\usepackage[francais]{babel}  %Doc fr
+\usepackage[francais]{babel} %Doc fr
 \usepackage{fullpage}
 \usepackage{euler}
 \usepackage{fontspec}
@@ -14,16 +14,16 @@
 %\setmainfont[Numbers=OldStyle]{Linux Libertine O}
 
 \begin{document}
-\title{TP9: Labyrinthes}
-\author{Paul Melotti (\texttt{paul.melotti@ens.fr}\footnote{N'HÉSITEZ à 
-m'écrire pour toute question sur l'informatique, les TIPE, les concours... Je 
+\title{TP9: Labyrinthes}
+\author{Paul Melotti (\texttt{paul.melotti@ens.fr}\footnote{N'HÉSITEZ à
+m'écrire pour toute question sur l'informatique, les TIPE, les concours... Je
 reste à votre disposition.})}
 \date{6 et 13 mars 2014}
 \maketitle{}
 
-L'objectif de ce TP est de découvrir comment les notions de parcours en 
+L'objectif de ce TP est de découvrir comment les notions de parcours en
 profondeur et en largeur que vous avez vues peuvent être utilisées dans le cas
-des labyrinthes.
+des labyrinthes, et d'exploiter des petits lutins.
 
 Un labyrinthe sera représenté de la façon suivante : c'est une matrice d'entiers,
 qui valent 0 sur les zones dégagées et 1 sur les murs. \textbf{On suppose que tous
@@ -39,8 +39,8 @@ directions, mais pas en diagonale. Exemple :
 |];;\end{verbatim}
  
 \paragraph{Question 1.} Écrire une fonction \texttt{affiche : int vect vect -> unit}
-qui affiche un labyrinthe : on représentera les murs par des \texttt{\#}, les 
-zones dégagées par des espaces vides et la sortie par un \texttt{S}. Exemple :
+qui affiche un labyrinthe : on représentera les murs par des \texttt{\#}, les
+zones dégagées par des espaces vides et la sortie par un \texttt{S}. Exemple :
 \begin{verbatim}affiche laby;;
 #########
 # #  #S##
@@ -50,7 +50,7 @@ zones dégagées par des espaces vides et la sortie par un \texttt{S}. Exemple�
 
 \section{Parcours en profondeur}
 On lance un petit lutin dans le labyrinthe à la case $i_0,j_0$ et on le charge
-de trouver la sortie. On lui donne un petit pot de peinture, comme ça il peut 
+de trouver la sortie. On lui donne un petit pot de peinture, comme ça il peut
 marquer les cases déjà rencontrées. Naturellement, notre lutin va effectuer un
 parcours en profondeur :
 \begin{verbatim}PP(case) =
@@ -63,25 +63,25 @@ parcours en profondeur :
 \paragraph{Question 2.} Pourquoi faut-il marquer les cases déjà rencontrées ?
 
 En Caml, on marquera les cases rencontrées en mettant un 3 dans la matrice.
-Comme on ne veut pas modifier notre labyrinthe initial, on a besoin de la 
-fonction suivante :
-\paragraph{Question 3.} Écrire une fonction \texttt{copie\_matrice} qui renvoie
+Comme on ne veut pas modifier notre labyrinthe initial, on a besoin de la
+fonction suivante :
+\paragraph{Question 3.} Écrire une fonction \texttt{copie\_matrice : int vect vect -> int vect vect} qui renvoie
 une copie de la matrice donnée en argument.
 
-\paragraph{Question 4.} Écrire une fonction 
+\paragraph{Question 4.} Écrire une fonction
 \texttt{estsoluble : int vect vect -> int -> int -> bool} qui prend en entrée un
-labyrinthe et la case d'où on part et dit si on peut atteindre la sortie, en 
+labyrinthe et la case d'où on part et dit si on peut atteindre la sortie, en
 effectuant un parcours en profondeur.
 \\
 
-On a maintenant un petit lutin qui sait nous dire si on peut sortir du 
-labyrinthe. Le problème, c'est qu'il ne nous dit pas quel chemin il faut 
+On a maintenant un petit lutin qui sait nous dire si on peut sortir du
+labyrinthe. Le problème, c'est qu'il ne nous dit pas quel chemin il faut
 prendre. Pour aussi connaître ce chemin, on va écrire sur chaque case visitée
 un chemin du départ à cette case, sous la forme d'une \texttt{(int * int) list}.
 
-\paragraph{Question 5.} Reprendre la fonction de la question 4 pour qu'elle 
+\paragraph{Question 5.} Reprendre la fonction de la question 4 pour qu'elle
 renvoie un \texttt{bool * (int*int) list} : le booléen dit si on peut sortir,
-et la liste nous donne un chemin pour sortir (et ce que vous voulez si on ne 
+et la liste nous donne un chemin pour sortir (et ce que vous voulez lorsqu'on ne
 peut pas sortir).
 
 \section{Parcours en largeur}
@@ -99,28 +99,105 @@ d'attente : enfilage, défilage, et test de file vide.
 On utilise la fonction d'exploration suivante : la file d'attente \texttt{f} est
 initialisée à \texttt{[(i0,j0)]} et la case $(i_0, j_0)$ est initialement
 marquée, et on lance le parcours en largeur :
-\begin{verbatim}TANT QUE f non vide,
+\begin{verbatim}TANT QUE f non vide,
    Défiler x de f,
    Pour tout voisin y de x,
       SI y non marqué
          enfiler y,
          .........,
          marquer y.
-FIN TANT QUE     
+FIN TANT QUE
 \end{verbatim}
 La partie laissée en petits points correspond à une certaine action que vous
 devrez trouver vous-même.
 
 \paragraph{Question 7.} Se convaincre que cet algorithme (le parcours en largeur)
-explore bien les cases par distance à l'origine croissante. 
+explore bien les cases par distance à l'origine croissante.
 
 \textit{Conseil :} essayer sur un exemple.
 
-\paragraph{Question 8.} Écrire une fonction \texttt{voisins : int -> int -> int vect vect -> (int * int) list} qui étant donné $i$, $j$ et un labyrinthe renvoie la liste 
+\paragraph{Question 8.} Écrire une fonction \texttt{voisins : int -> int -> int vect vect -> (int * int) list} qui étant donné $i$, $j$ et un labyrinthe renvoie la liste
 des voisins de la case $(i,j)$ qui ne sont pas marqués et ne sont pas des murs.
 
 \paragraph{Question 9.} Écrire une fonction qui fait comme à la question 5, mais
 cette fois-ci renvoie un chemin de longueur minimale lorsque le labyrinthe est
 résoluble.
+\\
 
+Ce qu'il faut retenir de cette étude : parcours en profondeur = pile, parcours en
+largeur = file. Le parcours en largeur est utile dans des problèmes de plus court chemin.
+\paragraph{Question 10. - Facultative}
+Essayez de générer des labyrinthes aléatoires: chaque case est un mur avec 
+probabilité $p$ et un couloir avec probabilité $1-p$. Les cases au bord doivent 
+rester des murs, et vous pouvez mettre une ou des sortie-s un peu où vous voulez. 
+Quelques fonctions pour faire de l'aléatoire : \texttt{random\_\_int n} renvoie un 
+entier de $[0;n[$, \texttt{random\_\_float f} renvoie un flottant de $[0;f[$.
+
+On peut se poser de nombreuses questions sur les labyrinthes aléatoires, par 
+exemple : quelle est la probabilité de relier le haut du labyrinthe au bas ? Évaluez 
+cette probabilité en faisant des essais sur de grands labyrinthes (de taille 100*100), 
+pour différents $p$.
+\section{Un dernier pour la route}
+Voici quelques compléments sur certains TP passés. Libre à vous de faire ce qui vous 
+inspire.
+\subsection{Listes d'adjacence et tri topologique}
+On a appris à représenter un graphe orienté $G$ par sa matrice d'adjacence $M$, 
+c'est-à-dire une matrice telle que $M_{ij}=1$ si $(i,j)$ est une arête, $0$ sinon.
+
+On peut utiliser une autre représentation : les listes d'adjacence. Pour chaque sommet 
+$i$ du graphe, on fait la liste $l_i$ des sommets $j$ tels que $(i,j)$ est une arête. 
+Puis on met toutes ces listes d'adjacence dans un tableau $[|l_0 ; ... ; l_{n-1}|]$. 
+Le graphe est alors représenté par un \texttt{int list vect}.
+\paragraph{Question 11.} Écrire des fonctions qui permettent de passer de l'une à 
+l'autre de ces deux représentations d'un graphe.
+\\
+
+Soit $G$ un graphe orienté acyclique, de sommets $[0,n-1]$. Le tri topolgique de 
+$G$ consiste à renuméroter les sommets de manière à ce que toute arête $(i,j)$ 
+vérifie $i<j$. On propose l'algorithme suivant :
+
+On crée une liste initialement vide, et on effectue un parcours en profondeur du 
+graphe. Lorsqu'on a complètement fini l'exploration d'un sommet, on l'ajoute en 
+tête de liste.
+
+\paragraph{Question 12.} Justifier que cet algorithme convient.
+
+\paragraph{Question 13.} Le programmer avec des listes d'adjacence.
+\\
+
+Ce tri est utilisé lorsqu'on veut organiser un planning de tâches à réaliser qui 
+sont liées par des contraintes du type ``$A$ doit être fait avant $B$''. Par exemple, 
+modéliser et résoudre le problème suivant : on veut s'habiller correctement le matin 
+avec les vêtements: cravate, pantalon, ceinture, chaussettes, montre, chaussures, 
+chemise, veste, caleçon.
+
+\subsection{Écriture sous forme infixe}
+L'écriture sous forme infixe est la plus naturelle pour l'utilisateur, mais elle est 
+plus compliquée à manipuler pour l'ordinateur à cause des problèmes de parenthésages.
+
+Comme au TP7, partie 2, on va se limiter à des symboles fonctionnels d'arité 0, 1 ou 
+2. On rappelle le type utilisé pour manier des expressions :
+\begin{verbatim}type expr = C of string | U of string*expr | B of string*expr*expr.\end{verbatim}
+L'écriture bien parenthésée d'une expression $t$, ou écriture infixe de $t$, est 
+définie inductivement par:
+\[Inf(t)=\left\lbrace
+\begin{array}{lcl}
+t & & \mathrm{si} \ t \ \mathrm{est \ constant}\\
+f \ Inf(t_1) & & \mathrm{si} \ t = f(t_1)\\
+\Big ( \normalsize \ Inf(t_1) \ f \ Inf(t_2) \ \Big ) \normalsize & & \mathrm{si} \ t = f(t_1,t_2)
+\end{array}\right.\]
+\paragraph{Question 14.} Écrire une fonction \texttt{ecritinf : expr -> unit} qui 
+imprime l'écriture infixe d'une expression.
+\paragraph{Question 15.} Écrire une fonction \texttt{creeliste : expr -> (int * string) list} 
+qui prend une expression et renvoie la liste de couples associée (c'est la liste 
+des couples arité, nom du symbole, écrits dans l'ordre de l'écriture infixe; on mettra 
+-1 dans la case arité pour une parenthèse).
+\paragraph{Question 16.} Écrire une fonction \texttt{arbre\_de\_liste : (int * string) list -> expr} 
+qui reconstruit une expression à partir de sa liste de couples.
+\paragraph{Question 17.} On souhaite transformer une chaîne de caractères du type 
+\texttt{"( ( exp x + y ) * z )"} en son arbre syntaxique. On suppose que le seul 
+symbole d'arité 1 est \texttt{exp}, que les seuls symboles d'arité 2 sont \texttt{+} 
+et \texttt{*} (les autres symboles sont donc d'arité 0), et que les symboles sont séparés 
+par des espaces. Écrire une fonction qui transforme ce genre de chaîne en liste de 
+couples, puis en arbre syntaxique.
 \end{document}

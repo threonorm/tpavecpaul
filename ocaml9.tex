@@ -70,8 +70,8 @@ une copie de la matrice donnée en argument.
 
 \paragraph{Question 4.} Écrire une fonction
 \texttt{estsoluble : int vect vect -> int -> int -> bool} qui prend en entrée un
-labyrinthe et la case d'où on part et dit si on peut atteindre la sortie, en
-effectuant un parcours en profondeur.
+labyrinthe et la case d'où on part et dit si on peut atteindre la sortie. 
+Utilisez pour cela un parcours en profondeur.
 \\
 
 On a maintenant un petit lutin qui sait nous dire si on peut sortir du
@@ -137,8 +137,11 @@ On peut se poser de nombreuses questions sur les labyrinthes aléatoires, par
 exemple : quelle est la probabilité de relier le haut du labyrinthe au bas ? Évaluez 
 cette probabilité en faisant des essais sur de grands labyrinthes (de taille 100*100), 
 pour différents $p$.
+
+Vous venez d'étudier quelques questions relatives à la \textit{percolation par 
+sites} sur le réseau $\mathbb{Z}^2$.
 \section{Un dernier pour la route}
-Voici quelques compléments sur certains TP passés. Libre à vous de faire ce qui vous 
+Voici quelques compléments sur des TP passés. Libre à vous de faire ce qui vous 
 inspire.
 \subsection{Listes d'adjacence et tri topologique}
 On a appris à représenter un graphe orienté $G$ par sa matrice d'adjacence $M$, 
@@ -172,8 +175,8 @@ avec les vêtements: cravate, pantalon, ceinture, chaussettes, montre, chaussure
 chemise, veste, caleçon.
 
 \subsection{Écriture sous forme infixe}
-L'écriture sous forme infixe est la plus naturelle pour l'utilisateur, mais elle est 
-plus compliquée à manipuler pour l'ordinateur à cause des problèmes de parenthésages.
+Par rapport aux écritures préfixe et suinformatiquement sous forme infixe est plus naturelle pour l'utilisateur, mais elle est 
+plus compliquée à manipuler informatiquement à cause des problèmes de parenthésages.
 
 Comme au TP7, partie 2, on va se limiter à des symboles fonctionnels d'arité 0, 1 ou 
 2. On rappelle le type utilisé pour manier des expressions :
@@ -200,4 +203,6 @@ symbole d'arité 1 est \texttt{exp}, que les seuls symboles d'arité 2 sont \tex
 et \texttt{*} (les autres symboles sont donc d'arité 0), et que les symboles sont séparés 
 par des espaces. Écrire une fonction qui transforme ce genre de chaîne en liste de 
 couples, puis en arbre syntaxique.
+\subsection{Autre chose}
+Combien y a-t-il de positions finales nulles (\textit{i.e.} sans gagnant) au Tic-Tac-Toe 3*3*3 ?
 \end{document}

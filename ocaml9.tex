@@ -15,9 +15,9 @@
 
 \begin{document}
 \title{TP9: Labyrinthes}
-\author{Paul Melotti (\texttt{paul.melotti@ens.fr}\footnote{N'HÉSITEZ à
+\author{Paul Melotti (\texttt{paul.melotti@ens.fr})\footnote{N'HÉSITEZ à
 m'écrire pour toute question sur l'informatique, les TIPE, les concours... Je
-reste à votre disposition.})}
+reste à votre disposition.}}
 \date{6 et 13 mars 2014}
 \maketitle{}
 
@@ -70,17 +70,17 @@ une copie de la matrice donnée en argument.
 
 \paragraph{Question 4.} Écrire une fonction
 \texttt{estsoluble : int vect vect -> int -> int -> bool} qui prend en entrée un
-labyrinthe et la case d'où on part et dit si on peut atteindre la sortie. 
+labyrinthe et la case d'où on part et dit si on peut atteindre la sortie.
 Utilisez pour cela un parcours en profondeur.
 \\
 
 On a maintenant un petit lutin qui sait nous dire si on peut sortir du
 labyrinthe. Le problème, c'est qu'il ne nous dit pas quel chemin il faut
-prendre. Pour aussi connaître ce chemin, on va écrire sur chaque case visitée
-un chemin du départ à cette case, sous la forme d'une \texttt{(int * int) list}.
+prendre. Il serait intéressant d'écrire sur chaque case visitée
+le chemin allant du départ à cette case, sous la forme d'une \texttt{(int * int) list}.
 
 \paragraph{Question 5.} Reprendre la fonction de la question 4 pour qu'elle
-renvoie un \texttt{bool * (int*int) list} : le booléen dit si on peut sortir,
+retienne aussi les chemins. Elle renverra un \texttt{bool * (int * int) list} : le booléen dit si on peut sortir,
 et la liste nous donne un chemin pour sortir (et ce que vous voulez lorsqu'on ne
 peut pas sortir).
 
@@ -127,40 +127,40 @@ résoluble.
 Ce qu'il faut retenir de cette étude : parcours en profondeur = pile, parcours en
 largeur = file. Le parcours en largeur est utile dans des problèmes de plus court chemin.
 \paragraph{Question 10. - Facultative}
-Essayez de générer des labyrinthes aléatoires: chaque case est un mur avec 
-probabilité $p$ et un couloir avec probabilité $1-p$. Les cases au bord doivent 
-rester des murs, et vous pouvez mettre une ou des sortie-s un peu où vous voulez. 
-Quelques fonctions pour faire de l'aléatoire : \texttt{random\_\_int n} renvoie un 
+Essayez de générer des labyrinthes aléatoires: chaque case est un mur avec
+probabilité $p$ et un couloir avec probabilité $1-p$. Les cases au bord doivent
+rester des murs, et vous pouvez mettre une ou des sortie-s un peu où vous voulez.
+Quelques fonctions pour faire de l'aléatoire : \texttt{random\_\_int n} renvoie un
 entier de $[0;n[$, \texttt{random\_\_float f} renvoie un flottant de $[0;f[$.
 
-On peut se poser de nombreuses questions sur les labyrinthes aléatoires, par 
-exemple : quelle est la probabilité de relier le haut du labyrinthe au bas ? Évaluez 
-cette probabilité en faisant des essais sur de grands labyrinthes (de taille 100*100), 
+On peut se poser de nombreuses questions sur les labyrinthes aléatoires, par
+exemple : quelle est la probabilité de relier le haut du labyrinthe au bas ? Évaluez
+cette probabilité en faisant des essais sur de grands labyrinthes (de taille 100*100),
 pour différents $p$.
 
-Vous venez d'étudier quelques questions relatives à la \textit{percolation par 
+Vous venez d'étudier quelques questions relatives à la \textit{percolation par
 sites} sur le réseau $\mathbb{Z}^2$.
 \section{Un dernier pour la route}
-Voici quelques compléments sur des TP passés. Libre à vous de faire ce qui vous 
+Voici quelques compléments sur des TP passés. Libre à vous de faire ce qui vous
 inspire.
 \subsection{Listes d'adjacence et tri topologique}
-On a appris à représenter un graphe orienté $G$ par sa matrice d'adjacence $M$, 
+On a appris à représenter un graphe orienté $G$ par sa matrice d'adjacence $M$,
 c'est-à-dire une matrice telle que $M_{ij}=1$ si $(i,j)$ est une arête, $0$ sinon.
 
-On peut utiliser une autre représentation : les listes d'adjacence. Pour chaque sommet 
-$i$ du graphe, on fait la liste $l_i$ des sommets $j$ tels que $(i,j)$ est une arête. 
-Puis on met toutes ces listes d'adjacence dans un tableau $[|l_0 ; ... ; l_{n-1}|]$. 
+On peut utiliser une autre représentation : les listes d'adjacence. Pour chaque sommet
+$i$ du graphe, on fait la liste $l_i$ des sommets $j$ tels que $(i,j)$ est une arête.
+Puis on met toutes ces listes d'adjacence dans un tableau $[|l_0 ; ... ; l_{n-1}|]$. 
 Le graphe est alors représenté par un \texttt{int list vect}.
-\paragraph{Question 11.} Écrire des fonctions qui permettent de passer de l'une à 
+\paragraph{Question 11.} Écrire des fonctions qui permettent de passer de l'une à
 l'autre de ces deux représentations d'un graphe.
 \\
 
-Soit $G$ un graphe orienté acyclique, de sommets $[0,n-1]$. Le tri topolgique de 
-$G$ consiste à renuméroter les sommets de manière à ce que toute arête $(i,j)$ 
-vérifie $i<j$. On propose l'algorithme suivant :
+Soit $G$ un graphe orienté acyclique connexe, de sommets $[0,n-1]$. Le tri topolgique de
+$G$ consiste à renuméroter les sommets de manière à ce que toute arête $(i,j)$
+vérifie $i<j$. On propose l'algorithme suivant :
 
-On crée une liste initialement vide, et on effectue un parcours en profondeur du 
-graphe. Lorsqu'on a complètement fini l'exploration d'un sommet, on l'ajoute en 
+On crée une liste initialement vide, et on effectue un parcours en profondeur du
+graphe. Lorsqu'on a complètement fini l'exploration d'un sommet, on l'ajoute en
 tête de liste.
 
 \paragraph{Question 12.} Justifier que cet algorithme convient.
@@ -168,20 +168,20 @@ tête de liste.
 \paragraph{Question 13.} Le programmer avec des listes d'adjacence.
 \\
 
-Ce tri est utilisé lorsqu'on veut organiser un planning de tâches à réaliser qui 
-sont liées par des contraintes du type ``$A$ doit être fait avant $B$''. Par exemple, 
-modéliser et résoudre le problème suivant : on veut s'habiller correctement le matin 
-avec les vêtements: cravate, pantalon, ceinture, chaussettes, montre, chaussures, 
+Ce tri est utilisé lorsqu'on veut organiser un planning de tâches à réaliser qui
+sont liées par des contraintes du type ``$A$ doit être fait avant $B$''. Par exemple,
+modéliser et résoudre le problème suivant : on veut s'habiller correctement le matin
+avec les vêtements: cravate, pantalon, ceinture, chaussettes, montre, chaussures,
 chemise, veste, caleçon.
 
 \subsection{Écriture sous forme infixe}
-Par rapport aux écritures préfixe et suinformatiquement sous forme infixe est plus naturelle pour l'utilisateur, mais elle est 
+Par rapport aux écritures préfixe et suffixe, l'écriture infixe est plus naturelle pour l'utilisateur. Par contre elle est
 plus compliquée à manipuler informatiquement à cause des problèmes de parenthésages.
 
-Comme au TP7, partie 2, on va se limiter à des symboles fonctionnels d'arité 0, 1 ou 
-2. On rappelle le type utilisé pour manier des expressions :
+Comme au TP7, partie 2, on va se limiter à des symboles fonctionnels d'arité 0, 1 ou
+2. On rappelle le type utilisé pour manier des expressions :
 \begin{verbatim}type expr = C of string | U of string*expr | B of string*expr*expr.\end{verbatim}
-L'écriture bien parenthésée d'une expression $t$, ou écriture infixe de $t$, est 
+L'écriture bien parenthésée d'une expression $t$, ou écriture infixe de $t$, est
 définie inductivement par:
 \[Inf(t)=\left\lbrace
 \begin{array}{lcl}
@@ -189,19 +189,19 @@ t & & \mathrm{si} \ t \ \mathrm{est \ constant}\\
 f \ Inf(t_1) & & \mathrm{si} \ t = f(t_1)\\
 \Big ( \normalsize \ Inf(t_1) \ f \ Inf(t_2) \ \Big ) \normalsize & & \mathrm{si} \ t = f(t_1,t_2)
 \end{array}\right.\]
-\paragraph{Question 14.} Écrire une fonction \texttt{ecritinf : expr -> unit} qui 
+\paragraph{Question 14.} Écrire une fonction \texttt{ecritinf : expr -> unit} qui
 imprime l'écriture infixe d'une expression.
-\paragraph{Question 15.} Écrire une fonction \texttt{creeliste : expr -> (int * string) list} 
-qui prend une expression et renvoie la liste de couples associée (c'est la liste 
-des couples arité, nom du symbole, écrits dans l'ordre de l'écriture infixe; on mettra 
+\paragraph{Question 15.} Écrire une fonction \texttt{creeliste : expr -> (int * string) list}
+qui prend une expression et renvoie la liste de couples associée (c'est la liste
+des couples arité, nom du symbole, écrits dans l'ordre de l'écriture infixe; on mettra
 -1 dans la case arité pour une parenthèse).
-\paragraph{Question 16.} Écrire une fonction \texttt{arbre\_de\_liste : (int * string) list -> expr} 
+\paragraph{Question 16.} Écrire une fonction \texttt{arbre\_de\_liste : (int * string) list -> expr}
 qui reconstruit une expression à partir de sa liste de couples.
-\paragraph{Question 17.} On souhaite transformer une chaîne de caractères du type 
-\texttt{"( ( exp x + y ) * z )"} en son arbre syntaxique. On suppose que le seul 
-symbole d'arité 1 est \texttt{exp}, que les seuls symboles d'arité 2 sont \texttt{+} 
-et \texttt{*} (les autres symboles sont donc d'arité 0), et que les symboles sont séparés 
-par des espaces. Écrire une fonction qui transforme ce genre de chaîne en liste de 
+\paragraph{Question 17.} On souhaite transformer une chaîne de caractères du style
+\texttt{"( ( exp x + y ) * z )"} en son arbre syntaxique. On suppose que le seul
+symbole d'arité 1 est \texttt{exp}, que les seuls symboles d'arité 2 sont \texttt{+}
+et \texttt{*} (les autres symboles sont donc d'arité 0), et que les symboles sont séparés
+par des espaces. Écrire une fonction qui transforme ce genre de chaîne en liste de
 couples, puis en arbre syntaxique.
 \subsection{Autre chose}
 Combien y a-t-il de positions finales nulles (\textit{i.e.} sans gagnant) au Tic-Tac-Toe 3*3*3 ?

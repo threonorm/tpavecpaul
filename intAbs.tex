@@ -1,0 +1,314 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[frenchb]{babel}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{stmaryrd}
+\usepackage{wrapfig}
+\usepackage{pgf}
+\usepackage{tikz}
+
+
+\newcommand\smt[1]{[\![#1]\!]}
+\usetheme{Warsaw}
+\newtheorem{theo}[theorem]{Théorème}
+\title{Tracing compilation by abstract
+interpretation.}
+\author[Thomas Bourgeat]{Auteurs : Stefano Dissegna, Francesco Logozzo, Francesco Ranzato}
+\date{Janvier 2013}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Plan}
+  \tableofcontents
+\end{frame}
+
+\section{Compilation à la volée.}
+
+%On veut optimiser localement
+% -est-ce que c'est correct?
+% -Ou est-ce qu'on fait les optims? 
+
+\subsection{Introduction}
+
+\begin{frame}{Idées reçues}
+\begin{itemize}
+\item Python, Javascript sont lents.
+\begin{itemize}
+\item le code Python est compilé en bytecode, et exécuté par une machine
+virtuelle.
+\end{itemize}
+\item C est rapide
+\pause
+\item C'est faux : un langage n'est pas lent. Son compilateur produit du code
+lent.
+\pause
+\item Le C a été beaucoup étudié, et on sait faire beaucoup d'optimisations
+qui font que le code produit est rapide. 
+\item Le C a des caractéristiques intrinsèques qui facilitent ce genre
+d'optimisation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Langage dynamique}
+\begin{itemize}
+\item Le bytecode est à priori plus lent que du code natif.
+\item Le fait que Python soit dynamique le rend difficile à optimiser par les
+analyses statiques.
+\pause
+\item Idée : Certaines \emph{zones chaudes} du programme pourraient être
+dynamiquement compilées vers du code natif et exécutées.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{JIT compilers}
+\begin{itemize}
+\item Compilateurs à la volée : 
+\begin{itemize}
+\item \emph{Basiquement:} Lorsque l'"interpréteur" s'aperçoit qu'une fonction
+est exécutée super souvent (dynamiquement). Il compile cette fonction
+\item Pour les prochains appels, l'interpréteur utilisera directement le code
+natif $\rightarrow$ il n'interpretera plus cette partie.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tracing JIT compilation}
+\begin{itemize}
+\item Pourquoi pas aller plus loin : 
+\pause
+\begin{itemize}
+\item Compiler en natif et optimiser pas seulement les fonctions.
+\item La machine passe beaucoup de temps dans des boucles : cherchons-les pour
+les optimisers.
+\end{itemize}  
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Problèmes}
+\begin{itemize}
+\item Repérer quelles sont les \emph{zones chaudes} (ou \emph{hot path})
+\item Les optimisers
+\item Prouver qu'on a pas fait n'importe quoi :
+\begin{itemize}
+\item Utiliser des optimisations prouvées correctes sous certaines hypothèses,
+qu'on garantie être vérifiées quand les le code optimisé est exécuté
+\item Donc garantir que le programme transformé \emph{se comporte} comme celui de
+départ.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{L'interprétation abstraite dans l'histoire}
+\begin{itemize}
+\item Définir honnêtement: \emph{zone chaude}, \emph{se comporte}.
+\item Donner une méthode pour trouver les zones chaudes.
+\item Permettre des définitions modulaires. 
+\item \emph{$\dots$} (trois petits points pipologiques)
+\end{itemize}
+\end{frame}
+
+
+\subsection{Un langage qui décrit le flot.}
+
+
+\begin{frame}
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.6]{syntax.jpg}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Sémantique de trace :
+\begin{itemize}
+\item Environnement : $\rho: Var \rightarrow Val$
+\item Commande : $ L : A \rightarrow L$
+\end{itemize} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.6]{ex1.jpg}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.6]{ex2.jpg}
+\end{figure}
+\end{frame}
+
+\section{Et dans le cadre de l'interprétation abstraite.}
+
+\subsection{Programmes et comportements.}
+\begin{frame}
+\begin{itemize}
+\item Définissons pour ce langage, les notions de comportement et de zones
+chaudes.
+\pause
+\item $P$ \emph{se comporte} comme $P'$ ("au sens de $\alpha$", qui est une
+abstraction de la sémantique de
+trace):
+\begin{itemize}
+\item $\alpha(T\smt{P})=\alpha(T\smt{P'})$
+\end{itemize}
+\pause
+\item \emph{zones chaudes} d'ordre n du programme P d'une trace $\sigma$: 
+\begin{itemize}
+\item Une trace abstraite de longueur n $(a_1,C_1),\dots,(a_n,C_n)$.
+\item Il existe $(\rho_i,C_i),\dots(\rho_n,C_n) \in loop(\sigma)$ tels que 
+$alpha((\rho_i,C_i),\dots(\rho_n,C_n))= (a_1,C_1),\dots,(a_n,C_n)$ et que la
+suite des états réels apparait au moins n fois dans la trace $\sigma$
+\item où $loop(\sigma)$ est l'ensemble des bouts de trace linéaires. (plus
+petite détails)
+\end{itemize}
+\pause
+\item \emph{Remarque:} On sait faire les calculs.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item Pour l'équivalence comportementale, on prend
+usuellement les changements d'environnements successifs. 
+\item On pourrait aussi prendre seulement ce qu'il se passe sur la sortie
+standard par exemple.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Exemple}
+\begin{itemize}
+\item En prenant pour abstraction d'environnement un unique point :
+$Store^\sharp=\{\top\} $
+\item
+\begin{figure}
+\center
+\includegraphics[scale=0.6]{hp.jpg}
+\end{figure}
+\end{itemize}
+\end{frame}
+
+\subsection{Décider quand exécuter le code optimisé.}
+\begin{frame}{Une transformation de programme.}
+\begin{itemize}
+\item Le code optimisé dans la zone chaude doit-être utilisé uniquement si on
+est certain que l'on a le droit.
+\item On rajoute donc des gardes entre chaque actions, qui vérifient qu'on a
+le droit de faire cette exécution optimisée. Sinon on sort du code optimisé pour
+retourner vers la version safe.
+\pause
+\item A ce moment là, rappeller que tout ceci est fait dynamiquement. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\center
+\includegraphics[scale=0.6]{optim.jpg}
+\end{figure}
+\end{frame}
+
+\subsection{Spécialisation de types : controler les optimisations.}
+
+\begin{frame}
+\begin{itemize}
+\item Certaines optimisations peuvent ne marcher que sous certaines hypothèses
+locales. Exemple : avoir des entiers dans certaines variables.
+\item On veut donc  extraire de l'information
+et ainsi essayer de faire des optimisations plus ciblées :
+\begin{itemize}
+\item Il faut que ce soit dynamique : fait à l'exécution par ce le monitor de
+trace.
+\pause
+\item Une idée naturelle est de regarder du côté du typage.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item On choisi l'"abstraction de type" pour chercher les zones chaudes :
+\begin{itemize}
+\item Un treillis des types.
+\item $\alpha_{type} : P(Value) \rightarrow Types$
+\item Se relève sur les environnements, et donc c'est gagné.
+\end{itemize} 
+\item Cette fois-ci les gardes sont plus utiles que l'exemple précèdent. Passer
+une garde, c'est garantir que certaines variables contiennent des valeurs d'un
+certain type. 
+\end{itemize}
+\end{frame}
+
+
+\section{C'est mieux qu'avant.}
+
+\begin{frame}{Travaux précèdents}
+\begin{itemize}
+\item Dans les travaux précèdents :
+\begin{itemize}
+\item Un langage de style impératif.
+\item Une sémantique à petit pas.
+\item Bisimulation (orientée jeu) pour parler d'équivalences comportementales.
+\end{itemize}
+\pause
+\item Ce qui existait peut se plonger dans le framework proposé par l'article.
+\begin{itemize}
+\item Une fonction de compilation.
+\item une sémantique de trace sur les programmes de Guo et Palsberg
+\item Une compilation correcte : $\alpha_{st}(T_{GP}\smt{S} ) =
+\alpha_{st}(T\smt{C(S)})$.
+\item Théorème d'équivalence entre  bisimulation et abstraction de traces identique.  
+\end{itemize}
+\pause
+\item Mais en plus on a un exemple du fait que le cadre via IA est strictement
+mieux!
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+\item Pour conclure :
+\begin{itemize}
+\item On a un cadre pour détecter dynamiquement des zones de code qui se
+repètent en vérifiant certaines propriétés.
+\item On a une manière d'être sur qu'on fait pas des optimisations quand il faut
+pas.
+\item On a gagné une manière d'exprimer des équivalences comportementales.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\item P. Cousot and R. Cousot. \emph{Systematic design of program transformation
+frameworks by abstract interpretation.} In Proceedings of the 29th
+ACM SIGACT-SIGPLAN Symposium on Principles of Programming
+Languages (POPL 2002), pages 178–190, New York, NY, USA, 2002.
+ACM.
+
+\item 
+Stefano Dissegna, Francesco
+Logozzo, and Francesco Ranzato. \emph{Tracing compilation by abstract
+interpretation.} In Principles of Programming Languages (POPL
+2014).
+
+
+\end{itemize}
+\end{frame}
+\end{document}
+
